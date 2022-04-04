@@ -149,7 +149,7 @@ class Tenants with ChangeNotifier {
       var length= await photo1.length();
       var request= http.MultipartRequest("POST",url);
       request.headers["authorization"]='Token $authToken';
-      request.fields['title']=tenant.title;
+      request.fields['Title']=tenant.title;
       request.fields['description']=tenant.description;
       request.fields['phone_number']=tenant.phoneNumber;
       request.fields['location']=tenant.location;
@@ -165,7 +165,7 @@ class Tenants with ChangeNotifier {
           filename: basename(photo1.path));
       request.files.add(multipartFile1);
       var response = await request.send();
-
+      print(response);
 
     } catch (error) {
       rethrow;

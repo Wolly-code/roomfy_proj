@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:roomfy_proj/providers/tenant.dart';
+import 'dart:developer';
 
 class PostTenantAd extends StatefulWidget {
   const PostTenantAd({Key? key}) : super(key: key);
@@ -27,8 +28,7 @@ class _PostTenantAdState extends State<PostTenantAd> {
   int? budget;
   String? preference;
   String? title;
-  bool petOwner=false;
-  bool status = false;
+  bool petOwner = false;
 
   Future<void> _photo1() async {
     final picker = ImagePicker();
@@ -75,7 +75,7 @@ class _PostTenantAdState extends State<PostTenantAd> {
     _form.currentState!.save();
     try {
       var tenant = Tenant(id: '',
-          fullName: 'Name',
+          fullName: name.toString(),
           poster: '',
           gender: gender.toString(),
           phoneNumber: phoneNumber.toString(),
@@ -88,15 +88,15 @@ class _PostTenantAdState extends State<PostTenantAd> {
           title: title.toString(),
           description: description.toString(),
           created: '',
-          status: status);
+          status: true);
       await Provider.of<Tenants>(context, listen: false).addTenantAd(
           tenant, _photo1Stored!);
-    } catch (error) {}
-    try {
-      print(email);
+      Navigator.of(context).pop();
+
     } catch (error) {
       rethrow;
     }
+
   }
 
   @override
@@ -234,7 +234,7 @@ class _PostTenantAdState extends State<PostTenantAd> {
                           setState(() {
                             occupationSelectedValue = newValue!;
                           });
-                          gender = newValue!;
+                          occupation = newValue!;
                         }),
                   ),
                 ),
@@ -371,13 +371,13 @@ class _PostTenantAdState extends State<PostTenantAd> {
                       SizedBox(
                         width: 20,
                       ),
-                      Text('Staus'),
+                      Text('Pet Owner'),
                     ],
                   ),
-                  value: status,
+                  value: petOwner,
                   onChanged: (value) {
                     setState(() {
-                      status = value is bool ? value : false;
+                      petOwner = value is bool ? value : false;
                     });
                   },
                 ),
