@@ -8,7 +8,7 @@ class TenantItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tenant = Provider.of<Tenant>(context);
+    final tenant = Provider.of<Tenant>(context,listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
@@ -18,7 +18,7 @@ class TenantItem extends StatelessWidget {
                 .pushNamed(TenantDetailScreen.routeName, arguments: tenant.id);
           },
           child: Image.network(
-            'https://media.istockphoto.com/photos/funny-best-friends-concept-human-taking-a-selfie-with-dog-picture-id1024311036?k=20&m=1024311036&s=612x612&w=0&h=vZkjFMmxmj2VPHfcuRSz6LLwoOEkFHPtvWVCs5ytTQQ=',
+            tenant.photo1,
             fit: BoxFit.cover,
           ),
         ),

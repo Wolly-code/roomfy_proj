@@ -14,6 +14,7 @@ import 'package:roomfy_proj/screens/main_view_screen.dart';
 import 'package:roomfy_proj/screens/room/post_room_ad.dart';
 import 'package:roomfy_proj/screens/room/room_detail_screen.dart';
 import 'package:roomfy_proj/screens/room/room_overview_screen.dart';
+import 'package:roomfy_proj/screens/room/user_room_detail_screen.dart';
 import 'package:roomfy_proj/screens/tenant/post_tenant_ad.dart';
 import 'package:roomfy_proj/screens/tenant/tenant_detail_screen.dart';
 import 'package:roomfy_proj/screens/tenant/tenant_overview_screen.dart';
@@ -85,6 +86,8 @@ class MyApp extends StatelessWidget {
             PostAd.routeName: (ctx) => const PostAd(),
             PostRoomAd.routeName: (ctx) => const PostRoomAd(),
             PostTenantAd.routeName: (ctx) => const PostTenantAd(),
+            UserRoomDetailScreen.routeName: (ctx) =>
+                const UserRoomDetailScreen(),
           },
         ),
       ),

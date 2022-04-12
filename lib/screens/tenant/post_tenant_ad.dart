@@ -33,7 +33,7 @@ class _PostTenantAdState extends State<PostTenantAd> {
   Future<void> _photo1() async {
     final picker = ImagePicker();
     final XFile? imageFile =
-    await picker.pickImage(source: ImageSource.gallery, maxWidth: 600);
+        await picker.pickImage(source: ImageSource.gallery, maxWidth: 600);
     if (imageFile == null) {
       return;
     }
@@ -74,29 +74,30 @@ class _PostTenantAdState extends State<PostTenantAd> {
     }
     _form.currentState!.save();
     try {
-      var tenant = Tenant(id: '',
-          fullName: name.toString(),
-          poster: '',
-          gender: gender.toString(),
-          phoneNumber: phoneNumber.toString(),
-          occupation: occupation.toString(),
-          age: int.parse(age.toString()),
-          petOwner: petOwner,
-          location: location.toString(),
-          budget: int.parse(budget.toString()),
-          preference: preference.toString(),
-          title: title.toString(),
-          description: description.toString(),
-          created: '',
-          status: true);
-      await Provider.of<Tenants>(context, listen: false).addTenantAd(
-          tenant, _photo1Stored!);
+      var tenant = Tenant(
+        id: '',
+        fullName: name.toString(),
+        poster: '',
+        gender: gender.toString(),
+        phoneNumber: phoneNumber.toString(),
+        occupation: occupation.toString(),
+        age: int.parse(age.toString()),
+        petOwner: petOwner,
+        location: location.toString(),
+        budget: int.parse(budget.toString()),
+        preference: preference.toString(),
+        title: title.toString(),
+        description: description.toString(),
+        created: '',
+        status: true,
+        photo1: '',
+      );
+      await Provider.of<Tenants>(context, listen: false)
+          .addTenantAd(tenant, _photo1Stored!);
       Navigator.of(context).pop();
-
     } catch (error) {
       rethrow;
     }
-
   }
 
   @override
@@ -104,9 +105,7 @@ class _PostTenantAdState extends State<PostTenantAd> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Details'),
-        backgroundColor: Theme
-            .of(context)
-            .primaryColor,
+        backgroundColor: Theme.of(context).primaryColor,
         actions: [
           TextButton(
             onPressed: _saveForm,
@@ -392,32 +391,30 @@ class _PostTenantAdState extends State<PostTenantAd> {
                       width: 100,
                       height: 100,
                       decoration: BoxDecoration(
-                        border: Border.all(
-                            width: 1, color: Colors.grey
-                        ),
-
+                        border: Border.all(width: 1, color: Colors.grey),
                       ),
-                      child: _photo1Stored != null ? GestureDetector(
-                        onTap: () async {
-                          _photo1();
-                        },
-                        child: Image.file(
-                          _photo1Stored!,
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                        ),
-                      ) : Container(
-                        height: 100,
-                        width: 100,
-                        child: IconButton(
-                          onPressed: () async {
-                            _photo1();
-                          },
-                          icon: const Icon(Icons.add),
-                        ),
-                        decoration:
-                        BoxDecoration(border: Border.all()),
-                      ),
+                      child: _photo1Stored != null
+                          ? GestureDetector(
+                              onTap: () async {
+                                _photo1();
+                              },
+                              child: Image.file(
+                                _photo1Stored!,
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                              ),
+                            )
+                          : Container(
+                              height: 100,
+                              width: 100,
+                              child: IconButton(
+                                onPressed: () async {
+                                  _photo1();
+                                },
+                                icon: const Icon(Icons.add),
+                              ),
+                              decoration: BoxDecoration(border: Border.all()),
+                            ),
                     ))
               ],
             ),

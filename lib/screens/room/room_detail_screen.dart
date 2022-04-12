@@ -95,18 +95,136 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
                   ),
                   Text(
                     loadedRoom.description,
-                    textAlign: TextAlign.center,
+                    textAlign: TextAlign.left,
                     softWrap: true,
                   ),
                   const Divider(),
-                  const Text(
-                    'OVERVIEW',
-                    style: TextStyle(
-                      fontSize: 15,
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'OVERVIEW',
+                      style: TextStyle(
+                        fontSize: 15,
+                      ),
                     ),
                   ),
                   Text('${loadedRoom.totalRooms} rooms'),
                   Text('in ${loadedRoom.location}'),
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Row(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(right: 10.0),
+                          child: Icon(Icons.attach_money_rounded, size: 29),
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Rent',
+                              style: TextStyle(fontSize: 15),
+                            ),
+                            Text(
+                              loadedRoom.price.toString() + ' / Daily',
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          width: 50,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20.0),
+                          child: Column(
+                            children: const [
+                              Text('Minimum Stay'),
+                              Padding(
+                                padding: EdgeInsets.symmetric(vertical: 8.0),
+                                child: Text('1' + 'Week'),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  const Divider(),
+                  const Text(
+                    'Amenities',
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                  amenities(
+                    name: 'Garage',
+                    loadedRoom: loadedRoom.garage,
+                    icon: const Icon(Icons.garage),
+                  ),
+                  amenities(
+                    name: 'Internet',
+                    loadedRoom: loadedRoom.internet,
+                    icon: const Icon(Icons.wifi),
+                  ),
+                  amenities(
+                    name: 'Parking',
+                    loadedRoom: loadedRoom.parking,
+                    icon: const Icon(Icons.directions_car),
+                  ),
+                  amenities(
+                    name: 'Balcony',
+                    loadedRoom: loadedRoom.balcony,
+                    icon: const Icon(Icons.balcony),
+                  ),
+                  amenities(
+                    name: 'Yard',
+                    loadedRoom: loadedRoom.yard,
+                    icon: const Icon(Icons.yard),
+                  ),
+                  const Divider(),
+                  const Text(
+                    'Amenities',
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.07,
+                        width: 180,
+                        child: ListTile(
+                          leading: const Icon(Icons.wheelchair_pickup_outlined),
+                          trailing: Text(
+                            'Disabled Access',
+                            textAlign: TextAlign.start,
+                            style: loadedRoom.disableAccess
+                                ? const TextStyle(
+                                    decoration: TextDecoration.none)
+                                : const TextStyle(
+                                    decoration: TextDecoration.lineThrough),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Divider(),
+                  const Text(
+                    'Property Type',
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width*0.5,
+                    height: MediaQuery.of(context).size.height*0.09,
+                    child: ListTile(
+                      leading: loadedRoom.propertyType == "Apartment"
+                          ? const Icon(Icons.apartment)
+                          : const Icon(Icons.house),
+                      trailing: Text(loadedRoom.propertyType),
+                    ),
+                  ),
                   ElevatedButton(
                     style: raisedButtonStyle,
                     onPressed: () {
@@ -121,6 +239,47 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+// ignore: camel_case_types
+class amenities extends StatefulWidget {
+  final Icon icon;
+  final String name;
+  final bool loadedRoom;
+
+  const amenities(
+      {Key? key,
+      required this.name,
+      required this.loadedRoom,
+      required this.icon})
+      : super(key: key);
+
+  @override
+  State<amenities> createState() => _amenitiesState();
+}
+
+class _amenitiesState extends State<amenities> {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.07,
+          width: 120,
+          child: ListTile(
+            leading: widget.icon,
+            trailing: Text(
+              widget.name,
+              textAlign: TextAlign.start,
+              style: widget.loadedRoom
+                  ? const TextStyle(decoration: TextDecoration.none)
+                  : const TextStyle(decoration: TextDecoration.lineThrough),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

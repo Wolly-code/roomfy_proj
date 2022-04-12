@@ -19,6 +19,7 @@ class Room with ChangeNotifier {
   final String propertyType;
   final int totalRooms;
   final int price;
+  final int securityDeposit;
   final bool internet;
   final bool parking;
   final bool balcony;
@@ -42,6 +43,7 @@ class Room with ChangeNotifier {
     required this.propertyType,
     required this.totalRooms,
     required this.price,
+    required this.securityDeposit,
     required this.internet,
     required this.parking,
     required this.balcony,
@@ -86,27 +88,29 @@ class Rooms with ChangeNotifier {
       for (var i = 0; i < extractedData.length; i++) {
         var currentElement = extractedData[i];
         loadedRoom.add(Room(
-            id: currentElement['id'].toString(),
-            title: currentElement['title'],
-            poster: currentElement['poster'],
-            posterId: currentElement['poster_id'].toString(),
-            description: currentElement['description'],
-            created: currentElement['created'],
-            email: currentElement['email'],
-            phoneNumber: currentElement['phone_number'],
-            totalRooms: currentElement['total_rooms'],
-            price: currentElement['price'],
-            internet: currentElement['internet'],
-            parking: currentElement['parking'],
-            balcony: currentElement['Balcony'],
-            yard: currentElement['Yard'],
-            disableAccess: currentElement['Disabled_Access'],
-            garage: currentElement['Garage'],
-            status: currentElement['status'],
-            location: currentElement['location'],
-            propertyType: currentElement['property_type'],
-            photo1: currentElement['photo1'],
-            photo2: currentElement['photo2']));
+          id: currentElement['id'].toString(),
+          title: currentElement['title'],
+          poster: currentElement['poster'],
+          posterId: currentElement['poster_id'].toString(),
+          description: currentElement['description'],
+          created: currentElement['created'],
+          email: currentElement['email'],
+          phoneNumber: currentElement['phone_number'],
+          totalRooms: currentElement['total_rooms'],
+          price: currentElement['price'],
+          internet: currentElement['internet'],
+          parking: currentElement['parking'],
+          balcony: currentElement['Balcony'],
+          yard: currentElement['Yard'],
+          disableAccess: currentElement['Disabled_Access'],
+          garage: currentElement['Garage'],
+          status: currentElement['status'],
+          location: currentElement['location'],
+          propertyType: currentElement['property_type'],
+          photo1: currentElement['photo1'],
+          photo2: currentElement['photo2'],
+          securityDeposit: currentElement['security_deposit'],
+        ));
       }
       _displayRooms =
           loadedRoom.where((element) => element.status == true).toList();
@@ -144,6 +148,7 @@ class Rooms with ChangeNotifier {
       request.fields["Disabled_Access"] = room.disableAccess.toString();
       request.fields["Garage"] = room.garage.toString();
       request.fields["status"] = room.status.toString();
+      request.fields["security_deposit"] = room.securityDeposit.toString();
       var multipartFile1 = http.MultipartFile('photo1', stream1, length1,
           filename: basename(photo1.path));
       var multipartFile2 = http.MultipartFile('photo2', stream2, length2,
@@ -151,10 +156,35 @@ class Rooms with ChangeNotifier {
       request.files.add(multipartFile1);
       request.files.add(multipartFile2);
       var response = await request.send();
+      final respStr = await response.stream.bytesToString();
     } catch (err) {
       rethrow;
     }
     notifyListeners();
+  }
+
+  Future<void> updateRoomPhoto(File photo1, File photo2, String id) async {
+    Uri url = Uri.parse('http://10.0.2.2:8000/api/hospital/$id');
+    try {
+      var stream1 = http.ByteStream(DelegatingStream.typed(photo1.openRead()));
+      var stream2 = http.ByteStream(DelegatingStream.typed(photo2.openRead()));
+      var length1 = await photo1.length();
+      var length2 = await photo2.length();
+      var request = http.MultipartRequest("PUT", url);
+      request.headers["authorization"] = 'Token $authToken';
+      var multipartFile1 = http.MultipartFile('photo1', stream1, length1,
+          filename: basename(photo1.path));
+      var multipartFile2 = http.MultipartFile('photo2', stream2, length2,
+          filename: basename(photo2.path));
+      request.files.add(multipartFile1);
+      request.files.add(multipartFile2);
+      var response = await request.send();
+      final respStr = await response.stream.bytesToString();
+      print(respStr);
+      print(response.statusCode);
+    } catch (err) {
+      rethrow;
+    }
   }
 
   Future<void> deleteRoom(String id) async {
@@ -172,34 +202,42 @@ class Rooms with ChangeNotifier {
     existingRoom = null;
   }
 
-  Future<void> updateRoom(String id, Room room) async {
+  Future<void> updateRoomDetail(String id, Room room) async {
+    print(room.id);
+    print(id);
     final roomIndex = _rooms.indexWhere((room) => room.id == id);
     if (roomIndex >= 0) {
       Uri url = Uri.parse('http://10.0.2.2:8000/rooms/$id');
-
-      http.patch(url,
-          body: json.encode({
-            'title': room.title,
-            'description': room.description,
-            'email': room.email,
-            'phone_number': room.phoneNumber,
-            'location': room.location,
-            'property_type': room.propertyType,
-            'total_rooms': room.totalRooms,
-            'price': room.price,
-            'internet': room.internet,
-            'parking': room.parking,
-            'Balcony': room.balcony,
-            'Yard': room.yard,
-            'Disabled_Access': room.disableAccess,
-            'Garage': room.garage,
-            'status': room.status,
-          }),
-          headers: {
-            'Authorization': 'Token $authToken',
-            'Content-Type': 'application/json'
-          });
-      _rooms[roomIndex] = room;
+      try {
+        var response = await http.patch(url,
+            body: json.encode({
+              'title': room.title,
+              'description': room.description,
+              'email': room.email,
+              'phone_number': room.phoneNumber,
+              'location': room.location,
+              'property_type': room.propertyType,
+              'total_rooms': room.totalRooms,
+              'price': room.price,
+              'internet': room.internet,
+              'parking': room.parking,
+              'Balcony': room.balcony,
+              'security_deposit': room.securityDeposit,
+              'Yard': room.yard,
+              'Disabled_Access': room.disableAccess,
+              'Garage': room.garage,
+              'status': room.status,
+            }),
+            headers: {
+              'Authorization': 'Token $authToken',
+              'Content-Type': 'application/json'
+            });
+        print(response.body);
+        print(response.statusCode);
+        _rooms[roomIndex] = room;
+      } catch (err) {
+        rethrow;
+      }
       notifyListeners();
     } else {}
   }
@@ -210,5 +248,23 @@ class Rooms with ChangeNotifier {
 
   Room findByUser(String poster) {
     return _rooms.firstWhere((room) => room.poster == poster);
+  }
+
+  Future<void> updateStatus(String id, bool status) async {
+    Uri url = Uri.parse('http://10.0.2.2:8000/rooms/$id');
+    bool newStatus = !status;
+    try {
+      final response = await http.patch(url,
+          headers: {
+            'Authorization': 'Token $authToken',
+            'Content-Type': 'application/json'
+          },
+          body: json.encode({
+            "status": newStatus,
+          }));
+    } catch (exp) {
+      rethrow;
+    }
+    notifyListeners();
   }
 }

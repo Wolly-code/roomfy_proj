@@ -27,7 +27,8 @@ class _EditTenantScreenState extends State<EditTenantScreen> {
       title: '',
       description: '',
       created: '',
-      status: false);
+      status: false,
+      photo1: '');
   var _innit = true;
   var _isLoading = false;
   var _innitValues = {
@@ -76,11 +77,12 @@ class _EditTenantScreenState extends State<EditTenantScreen> {
     _innit = false;
     super.didChangeDependencies();
   }
-@override
-  void dispose() {
 
-  super.dispose();
+  @override
+  void dispose() {
+    super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Container();

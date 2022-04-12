@@ -22,6 +22,7 @@ class Tenant with ChangeNotifier {
   final String description;
   final String created;
   final bool status;
+  final String photo1;
 
   Tenant({
     required this.id,
@@ -39,6 +40,7 @@ class Tenant with ChangeNotifier {
     required this.description,
     required this.created,
     required this.status,
+    required this.photo1,
   });
 }
 
@@ -87,6 +89,7 @@ class Tenants with ChangeNotifier {
           description: currentElement['description'],
           created: currentElement['created'],
           status: currentElement['status'],
+          photo1: currentElement['photo1'],
         ));
         _owned =
             loadedTenant.where((element) => element.poster == userId).toList();
@@ -146,27 +149,26 @@ class Tenants with ChangeNotifier {
     Uri url = Uri.parse('http://10.0.2.2:8000/tenant/viewall');
     try {
       var stream = http.ByteStream(DelegatingStream.typed(photo1.openRead()));
-      var length= await photo1.length();
-      var request= http.MultipartRequest("POST",url);
-      request.headers["authorization"]='Token $authToken';
-      request.fields['Title']=tenant.title;
-      request.fields['description']=tenant.description;
-      request.fields['phone_number']=tenant.phoneNumber;
-      request.fields['location']=tenant.location;
-      request.fields['full_name']=tenant.fullName;
-      request.fields['gender']=tenant.gender;
-      request.fields['occupation']=tenant.occupation;
-      request.fields['age']=tenant.age.toString();
-      request.fields['pet_owner']=tenant.petOwner.toString();
-      request.fields['Budget']=tenant.budget.toString();
-      request.fields['Preference']=tenant.preference.toString();
-      request.fields['status']=tenant.status.toString();
+      var length = await photo1.length();
+      var request = http.MultipartRequest("POST", url);
+      request.headers["authorization"] = 'Token $authToken';
+      request.fields['Title'] = tenant.title;
+      request.fields['description'] = tenant.description;
+      request.fields['phone_number'] = tenant.phoneNumber;
+      request.fields['location'] = tenant.location;
+      request.fields['full_name'] = tenant.fullName;
+      request.fields['gender'] = tenant.gender;
+      request.fields['occupation'] = tenant.occupation;
+      request.fields['age'] = tenant.age.toString();
+      request.fields['pet_owner'] = tenant.petOwner.toString();
+      request.fields['Budget'] = tenant.budget.toString();
+      request.fields['Preference'] = tenant.preference.toString();
+      request.fields['status'] = tenant.status.toString();
       var multipartFile1 = http.MultipartFile('photo1', stream, length,
           filename: basename(photo1.path));
       request.files.add(multipartFile1);
       var response = await request.send();
       print(response);
-
     } catch (error) {
       rethrow;
     }
@@ -211,7 +213,8 @@ class Tenants with ChangeNotifier {
           title: tenant.title,
           description: tenant.description,
           created: res['created'],
-          status: tenant.status);
+          status: tenant.status,
+          photo1: res['photo1']);
       _tenants.add(newTenant);
     } catch (error) {
       rethrow;

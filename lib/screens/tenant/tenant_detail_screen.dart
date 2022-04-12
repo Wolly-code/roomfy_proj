@@ -26,7 +26,7 @@ class _TenantDetailScreenState extends State<TenantDetailScreen> {
               height: 300,
               width: double.infinity,
               child: Image.network(
-                'https://media.istockphoto.com/photos/funny-best-friends-concept-human-taking-a-selfie-with-dog-picture-id1024311036?k=20&m=1024311036&s=612x612&w=0&h=vZkjFMmxmj2VPHfcuRSz6LLwoOEkFHPtvWVCs5ytTQQ=',
+                loadedTenant.photo1,
                 fit: BoxFit.cover,
               ),
             ),

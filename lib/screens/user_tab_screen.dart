@@ -22,6 +22,15 @@ class UserTab extends StatelessWidget {
           const Divider(),
           ListTile(
             leading: const Icon(Icons.account_box),
+            title: const Text('User Profile'),
+            onTap: () {
+              Navigator.of(context).pushNamed(MyAdverts.routeName);
+            },
+            trailing: const Icon(Icons.arrow_forward_ios,size: 18,),
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.account_box),
             title: const Text('My Ads'),
             onTap: () {
               Navigator.of(context).pushNamed(MyAdverts.routeName);
