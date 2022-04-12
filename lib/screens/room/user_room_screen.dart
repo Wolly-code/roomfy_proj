@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:roomfy_proj/constraints.dart';
 import 'package:roomfy_proj/screens/app_drawer.dart';
 import 'package:roomfy_proj/screens/room/edit_room_screen.dart';
-import 'package:roomfy_proj/widgets/user_room_item.dart';
+import 'package:roomfy_proj/widgets/room/user_room_item.dart';
 import '../../providers/room.dart';
 import '../post_ad.dart';
 

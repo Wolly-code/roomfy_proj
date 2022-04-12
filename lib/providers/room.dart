@@ -80,10 +80,9 @@ class Rooms with ChangeNotifier {
   Future<void> fetchAndSetRoom() async {
     Uri url = Uri.parse('http://10.0.2.2:8000/rooms/viewall');
     final response =
-        await http.get(url, headers: {'Authorization': 'Token $authToken'});
+    await http.get(url, headers: {'Authorization': 'Token $authToken'});
     final List<Room> loadedRoom = [];
     try {
-      // print(json.decode(response.body));
       final extractedData = json.decode(response.body);
       for (var i = 0; i < extractedData.length; i++) {
         var currentElement = extractedData[i];
@@ -122,7 +121,6 @@ class Rooms with ChangeNotifier {
       rethrow;
     }
   }
-
   Future<void> addRoom(Room room, File photo1, File photo2) async {
     Uri url = Uri.parse('http://10.0.2.2:8000/rooms/viewall');
     try {
@@ -164,13 +162,13 @@ class Rooms with ChangeNotifier {
   }
 
   Future<void> updateRoomPhoto(File photo1, File photo2, String id) async {
-    Uri url = Uri.parse('http://10.0.2.2:8000/api/hospital/$id');
+    Uri url = Uri.parse('http://10.0.2.2:8000/rooms/$id');
     try {
       var stream1 = http.ByteStream(DelegatingStream.typed(photo1.openRead()));
       var stream2 = http.ByteStream(DelegatingStream.typed(photo2.openRead()));
       var length1 = await photo1.length();
       var length2 = await photo2.length();
-      var request = http.MultipartRequest("PUT", url);
+      var request = http.MultipartRequest("PATCH", url);
       request.headers["authorization"] = 'Token $authToken';
       var multipartFile1 = http.MultipartFile('photo1', stream1, length1,
           filename: basename(photo1.path));
@@ -203,8 +201,6 @@ class Rooms with ChangeNotifier {
   }
 
   Future<void> updateRoomDetail(String id, Room room) async {
-    print(room.id);
-    print(id);
     final roomIndex = _rooms.indexWhere((room) => room.id == id);
     if (roomIndex >= 0) {
       Uri url = Uri.parse('http://10.0.2.2:8000/rooms/$id');
@@ -232,8 +228,6 @@ class Rooms with ChangeNotifier {
               'Authorization': 'Token $authToken',
               'Content-Type': 'application/json'
             });
-        print(response.body);
-        print(response.statusCode);
         _rooms[roomIndex] = room;
       } catch (err) {
         rethrow;

@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:roomfy_proj/providers/room.dart';
@@ -34,13 +35,27 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 300,
-              width: double.infinity,
-              child: Image.network(
+            CarouselSlider(
+              options: CarouselOptions(height: 300.0),
+              items: [
                 loadedRoom.photo1,
-                fit: BoxFit.cover,
-              ),
+                loadedRoom.photo2,
+              ].map((i) {
+                return Builder(
+                  builder: (BuildContext context) {
+                    return Container(
+                      width: MediaQuery.of(context).size.width,
+                      margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                      decoration: const BoxDecoration(color: Colors.amber),
+                      child: Image.network(
+                        i,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                      ),
+                    );
+                  },
+                );
+              }).toList(),
             ),
             const SizedBox(
               height: 10,

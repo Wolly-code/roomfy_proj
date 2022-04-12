@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:roomfy_proj/screens/tenant/tenant_detail_screen.dart';
-import '../providers/tenant.dart';
+import '../../providers/tenant.dart';
 
 class TenantItem extends StatelessWidget {
   const TenantItem({Key? key}) : super(key: key);

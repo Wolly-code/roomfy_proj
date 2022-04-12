@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:roomfy_proj/screens/app_drawer.dart';
 import 'package:provider/provider.dart';
-import 'package:roomfy_proj/widgets/rooms_grid_view.dart';
+import 'package:roomfy_proj/widgets/room/rooms_grid_view.dart';
 import '../../providers/room.dart';
 class RoomView extends StatefulWidget {
   const RoomView({Key? key}) : super(key: key);

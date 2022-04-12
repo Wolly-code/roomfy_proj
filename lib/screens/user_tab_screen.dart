@@ -5,6 +5,7 @@ import 'package:roomfy_proj/screens/my_adverts.dart';
 import 'package:roomfy_proj/screens/room/user_room_booking_screen.dart';
 import 'package:roomfy_proj/screens/room/user_room_screen.dart';
 import 'package:roomfy_proj/screens/tenant/user_tenant_screen.dart';
+import 'package:roomfy_proj/screens/user/user_profile_overview.dart';
 
 class UserTab extends StatelessWidget {
   const UserTab({Key? key}) : super(key: key);
@@ -24,9 +25,12 @@ class UserTab extends StatelessWidget {
             leading: const Icon(Icons.account_box),
             title: const Text('User Profile'),
             onTap: () {
-              Navigator.of(context).pushNamed(MyAdverts.routeName);
+              Navigator.of(context).pushNamed(UserProfileOverview.routeName);
             },
-            trailing: const Icon(Icons.arrow_forward_ios,size: 18,),
+            trailing: const Icon(
+              Icons.arrow_forward_ios,
+              size: 18,
+            ),
           ),
           const Divider(),
           ListTile(
@@ -35,7 +39,10 @@ class UserTab extends StatelessWidget {
             onTap: () {
               Navigator.of(context).pushNamed(MyAdverts.routeName);
             },
-            trailing: const Icon(Icons.arrow_forward_ios,size: 18,),
+            trailing: const Icon(
+              Icons.arrow_forward_ios,
+              size: 18,
+            ),
           ),
           const Divider(),
           ListTile(
@@ -44,7 +51,10 @@ class UserTab extends StatelessWidget {
             onTap: () {
               Navigator.of(context).pushNamed(UserRoomBookingScreen.routeName);
             },
-            trailing: const Icon(Icons.arrow_forward_ios,size: 18,),
+            trailing: const Icon(
+              Icons.arrow_forward_ios,
+              size: 18,
+            ),
           ),
           const Divider(),
           ListTile(
@@ -54,7 +64,10 @@ class UserTab extends StatelessWidget {
               Navigator.of(context).popAndPushNamed('/');
               Provider.of<Auth>(context, listen: false).logout();
             },
-            trailing: const Icon(Icons.arrow_forward_ios,size: 18,),
+            trailing: const Icon(
+              Icons.arrow_forward_ios,
+              size: 18,
+            ),
           ),
         ],
       ),

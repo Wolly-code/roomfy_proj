@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:roomfy_proj/widgets/room/room_item.dart';
+import '../../providers/room.dart';
 import 'package:provider/provider.dart';
-import '../providers/tenant.dart';
-import '../widgets/tenant_item.dart';
 
-class TenantGrid extends StatelessWidget {
-  const TenantGrid({Key? key}) : super(key: key);
+class RoomsGrid extends StatelessWidget {
+  const RoomsGrid({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final tenantData = Provider.of<Tenants>(context);
-    final tenant = tenantData.tenants;
-    return tenant.isEmpty
+    final roomData = Provider.of<Rooms>(context);
+    final rooms = roomData.displayRooms;
+    return rooms.isEmpty
         ? const Center(
-          child: Text('NO TENANT DATA AVAILABLE'),
-        )
+            child: Text("NO ROOM DATA FOUND"),
+          )
         : GridView.builder(
             padding: const EdgeInsets.all(10),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -21,10 +21,10 @@ class TenantGrid extends StatelessWidget {
                 childAspectRatio: 4 / 3,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 40),
-            itemCount: tenant.length,
+            itemCount: rooms.length,
             itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
-              value: tenant[i],
-              child: const TenantItem(),
+              value: rooms[i],
+              child: const RoomItem(),
             ),
           );
   }

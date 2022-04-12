@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:roomfy_proj/providers/room.dart';
+import 'package:roomfy_proj/screens/room/update_room_photo.dart';
 
 class UserRoomDetailScreen extends StatefulWidget {
   const UserRoomDetailScreen({Key? key}) : super(key: key);
@@ -722,6 +723,12 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                     ),
                     const Divider(),
                     const Text('Upload Photo'),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(UpdateImage.routeName,
+                              arguments: _editedRoom.id);
+                        },
+                        child: const Text('Tap to Change Image'))
                   ],
                 ),
               ),

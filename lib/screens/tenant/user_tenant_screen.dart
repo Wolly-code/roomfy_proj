@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:roomfy_proj/providers/tenant.dart';
-import 'package:roomfy_proj/widgets/user_tenant_item.dart';
+import 'package:roomfy_proj/widgets/tenant/user_tenant_item.dart';
 import '../../screens/app_drawer.dart';
 import 'edit_tenant_screen.dart';
 

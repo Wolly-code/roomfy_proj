@@ -5,6 +5,7 @@ import 'package:roomfy_proj/providers/auth.dart';
 import 'package:roomfy_proj/providers/booking.dart';
 import 'package:roomfy_proj/providers/room.dart';
 import 'package:roomfy_proj/providers/tenant.dart';
+import 'package:roomfy_proj/providers/user.dart';
 import 'package:roomfy_proj/screens/auth_screen.dart';
 import 'package:roomfy_proj/screens/my_adverts.dart';
 import 'package:roomfy_proj/screens/post_ad.dart';
@@ -14,12 +15,16 @@ import 'package:roomfy_proj/screens/main_view_screen.dart';
 import 'package:roomfy_proj/screens/room/post_room_ad.dart';
 import 'package:roomfy_proj/screens/room/room_detail_screen.dart';
 import 'package:roomfy_proj/screens/room/room_overview_screen.dart';
+import 'package:roomfy_proj/screens/room/update_room_photo.dart';
 import 'package:roomfy_proj/screens/room/user_room_detail_screen.dart';
 import 'package:roomfy_proj/screens/tenant/post_tenant_ad.dart';
 import 'package:roomfy_proj/screens/tenant/tenant_detail_screen.dart';
 import 'package:roomfy_proj/screens/tenant/tenant_overview_screen.dart';
 import 'package:roomfy_proj/screens/room/user_room_screen.dart';
 import 'package:roomfy_proj/screens/tenant/user_tenant_screen.dart';
+import 'package:roomfy_proj/screens/user/create_profile.dart';
+import 'package:roomfy_proj/screens/user/user_profile_overview.dart';
+import 'package:roomfy_proj/screens/user/user_profile_overview.dart';
 import 'screens/room/user_room_booking_screen.dart';
 
 void main() {
@@ -35,6 +40,14 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => Auth()),
+        ChangeNotifierProxyProvider<Auth, Users>(
+          create: (context) => Users('', '', []),
+          update: (BuildContext context, auth, previousUser) => Users(
+            auth.token.toString(),
+            auth.userId.toString(),
+            previousUser == null ? [] : previousUser.users,
+          ),
+        ),
         ChangeNotifierProxyProvider<Auth, Rooms>(
           create: (context) => Rooms('', '', []),
           update: (BuildContext context, auth, previousRoom) => Rooms(
@@ -76,7 +89,6 @@ class MyApp extends StatelessWidget {
             RoomView.routeName: (ctx) => const RoomView(),
             RoomDetailScreen.routeName: (ctx) => const RoomDetailScreen(),
             UserRoomScreen.routeName: (ctx) => const UserRoomScreen(),
-            // EditRoomScreen.routeName: (ctx) => const EditRoomScreen(),
             TenantDetailScreen.routeName: (ctx) => const TenantDetailScreen(),
             UserTenantScreen.routeName: (ctx) => const UserTenantScreen(),
             UserRoomBookingScreen.routeName: (ctx) =>
@@ -88,6 +100,9 @@ class MyApp extends StatelessWidget {
             PostTenantAd.routeName: (ctx) => const PostTenantAd(),
             UserRoomDetailScreen.routeName: (ctx) =>
                 const UserRoomDetailScreen(),
+            UpdateImage.routeName: (ctx) => const UpdateImage(),
+            UserProfileOverview.routeName: (ctx) => const UserProfileOverview(),
+            CreateProfile.routeName:(ctx)=> const CreateProfile(),
           },
         ),
       ),

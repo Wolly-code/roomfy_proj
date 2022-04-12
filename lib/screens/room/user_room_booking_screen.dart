@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:roomfy_proj/widgets/user_booking_item.dart';
+import 'package:roomfy_proj/widgets/room/user_room_booking_item.dart';
 import '../../providers/booking.dart';
 
 class UserRoomBookingScreen extends StatefulWidget {

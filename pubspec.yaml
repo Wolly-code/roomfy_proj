@@ -38,7 +38,8 @@ dependencies:
   http: ^0.13.4
   intl: ^0.17.0
   flutter_svg: ^1.0.3
-  image_picker: ^0.8.4+11
+  image_picker: 0.8.5
+  carousel_slider: ^4.0.0
 
 dev_dependencies:
   flutter_test:

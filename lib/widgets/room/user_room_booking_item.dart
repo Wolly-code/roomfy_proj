@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:roomfy_proj/providers/booking.dart';
 import 'dart:math';
 import 'package:provider/provider.dart';
-import '../providers/room.dart';
+import '../../providers/room.dart';
 
 class UserBookingItem extends StatefulWidget {
   const UserBookingItem({Key? key, required this.item}) : super(key: key);
