@@ -2,7 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:roomfy_proj/providers/room.dart';
-import 'package:roomfy_proj/screens/room/booking_screen.dart';
+import 'package:roomfy_proj/screens/room/room_booking_screen.dart';
 
 class RoomDetailScreen extends StatefulWidget {
   const RoomDetailScreen({Key? key}) : super(key: key);

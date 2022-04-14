@@ -36,7 +36,7 @@ class _UserProfileOverviewState extends State<UserProfileOverview> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('User Profile'),
+        title: const Text('Profile    '),
         centerTitle: true,
       ),
       body: _isLoading

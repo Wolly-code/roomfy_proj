@@ -48,8 +48,11 @@ class _UserTenantScreenState extends State<UserTenantScreen> {
                         child: ListView.builder(
                           itemCount: tenantData.owned.length,
                           itemBuilder: (ctx, i) => UserTenantItem(
-                              title: tenantData.owned[i].title,
-                              id: tenantData.owned[i].id),
+                            title: tenantData.owned[i].title,
+                            id: tenantData.owned[i].id,
+                            photo1: tenantData.owned[i].photo1,
+                            description: tenantData.owned[i].description,
+                          ),
                         ),
                       ),
                     ),

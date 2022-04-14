@@ -14,6 +14,7 @@ class CreateProfile extends StatefulWidget {
 }
 
 class _CreateProfileState extends State<CreateProfile> {
+  bool _innit = true;
   final _form = GlobalKey<FormState>();
   File? _photo1Stored;
   String? firstName;
@@ -22,6 +23,42 @@ class _CreateProfileState extends State<CreateProfile> {
   String? userId;
   String? bio;
   String? email;
+  String? gender;
+  String? location;
+  String photo = 'https://img.icons8.com/color/344/user.png';
+  User _editedUser = User(
+      id: '',
+      firstName: '',
+      lastName: '',
+      phoneNumber: '',
+      userId: '',
+      bio: '',
+      email: '',
+      gender: '',
+      profile: '',
+      location: '');
+  var _innitValues = {
+    'firstName': '',
+    'lastName': '',
+    'phoneNumber': '',
+    'bio': '',
+    'email': '',
+    'gender': '',
+    'location': '',
+    'profile': '',
+  };
+
+  List<DropdownMenuItem<String>> get genderDropDown {
+    List<DropdownMenuItem<String>> menuItems = const [
+      DropdownMenuItem(child: Text("Male"), value: "Male"),
+      DropdownMenuItem(child: Text("Female"), value: "Female"),
+      DropdownMenuItem(child: Text("Others"), value: "Others"),
+    ];
+    return menuItems;
+  }
+
+  String genderSelectedValue = 'Male';
+  String genderDropDownValue = 'Male';
 
   Future<void> _photo1() async {
     final picker = ImagePicker();
@@ -42,31 +79,85 @@ class _CreateProfileState extends State<CreateProfile> {
       return;
     }
     _form.currentState!.save();
-    try {
-      var user = User(
-          id: '',
-          firstName: firstName.toString(),
-          lastName: lastName.toString(),
-          phoneNumber: phoneNumber.toString(),
-          userId: '',
-          bio: bio.toString(),
-          email: email.toString(),
-          profile: '');
-      await Provider.of<Users>(context, listen: false)
-          .addUser(user, _photo1Stored!);
-      Navigator.of(context).pop();
-    } catch (error) {
-      rethrow;
+    var users = User(
+      id: '',
+      firstName: firstName.toString(),
+      lastName: lastName.toString(),
+      phoneNumber: phoneNumber.toString(),
+      userId: '',
+      bio: bio.toString(),
+      email: email.toString(),
+      profile: '',
+      gender: gender.toString(),
+      location: location.toString(),
+    );
+    if (_editedUser.id != '') {
+      gender ??= _editedUser.gender;
+      if (_photo1Stored != null) {
+        await Provider.of<Users>(context, listen: false).updateUserWithPhoto(
+            users, _photo1Stored!, _editedUser.id, gender.toString());
+      } else {
+        await Provider.of<Users>(context, listen: false)
+            .updateUserWithoutPhoto(users, _editedUser.id, gender.toString());
+      }
+    } else {
+      try {
+        await Provider.of<Users>(context, listen: false)
+            .addUser(users, _photo1Stored!);
+        Navigator.of(context).pop();
+      } catch (e) {
+        await showDialog<Null>(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+                  title: const Text('An Error Occurred'),
+                  content: const Text('Something Went wrong'),
+                  actions: [
+                    FlatButton(
+                        child: const Text('Okay'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        })
+                  ],
+                ));
+      }
     }
   }
 
   @override
+  void didChangeDependencies() {
+    if (_innit) {
+      try {
+        final String? userId =
+            ModalRoute.of(context)!.settings.arguments as String;
+        if (userId != null) {
+          final user = Provider.of<Users>(context, listen: false).userObj;
+          _editedUser = user!;
+          _innitValues = {
+            'firstName': _editedUser.firstName,
+            'lastName': _editedUser.lastName,
+            'phoneNumber': _editedUser.phoneNumber,
+            'bio': _editedUser.bio,
+            'email': _editedUser.email,
+            'gender': _editedUser.gender,
+            'location': _editedUser.location,
+            'profile': _editedUser.profile,
+          };
+          photo = _editedUser.profile;
+        }
+      } catch (e) {}
+    }
+    _innit = false;
+    super.didChangeDependencies();
+  }
+
+  @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Create Profile',
-          style: TextStyle(fontSize: 15),
+        title: Text(
+          _editedUser.id == '' ? 'Create Profile' : 'Update Profile',
+          style: const TextStyle(fontSize: 15),
         ),
         centerTitle: true,
         actions: [
@@ -122,7 +213,10 @@ class _CreateProfileState extends State<CreateProfile> {
                               clipBehavior: Clip.none,
                               fit: StackFit.expand,
                               children: [
-                                const CircleAvatar(
+                                CircleAvatar(
+                                  backgroundImage: photo != ''
+                                      ? NetworkImage(photo)
+                                      : NetworkImage(photo),
                                   radius: 200.00,
                                 ),
                                 Positioned(
@@ -150,15 +244,16 @@ class _CreateProfileState extends State<CreateProfile> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: const Text('Lets start with formality'),
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text('Lets start with formality'),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     vertical: 10,
                   ),
                   child: TextFormField(
+                    initialValue: _innitValues['firstName'],
                     decoration: const InputDecoration(
                       labelStyle: TextStyle(fontSize: 15),
                       labelText: 'First Name ',
@@ -180,6 +275,7 @@ class _CreateProfileState extends State<CreateProfile> {
                     vertical: 10,
                   ),
                   child: TextFormField(
+                    initialValue: _innitValues['lastName'],
                     decoration: const InputDecoration(
                       labelStyle: TextStyle(fontSize: 15),
                       labelText: 'Last Name',
@@ -196,6 +292,24 @@ class _CreateProfileState extends State<CreateProfile> {
                     },
                   ),
                 ),
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black38),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Center(
+                    child: DropdownButton(
+                        value: genderSelectedValue,
+                        items: genderDropDown,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            genderSelectedValue = newValue!;
+                          });
+                          gender = newValue!;
+                        }),
+                  ),
+                ),
                 const Divider(),
                 const Text(
                     'Now only if you could fill up your contact details'),
@@ -204,6 +318,7 @@ class _CreateProfileState extends State<CreateProfile> {
                     vertical: 10,
                   ),
                   child: TextFormField(
+                    initialValue: _innitValues['phoneNumber'],
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                       labelStyle: TextStyle(fontSize: 15),
@@ -226,6 +341,30 @@ class _CreateProfileState extends State<CreateProfile> {
                     vertical: 10,
                   ),
                   child: TextFormField(
+                    initialValue: _innitValues['location'],
+                    keyboardType: TextInputType.text,
+                    decoration: const InputDecoration(
+                      labelStyle: TextStyle(fontSize: 15),
+                      labelText: 'Location',
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please Provide your location';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) {
+                      location = value;
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 10,
+                  ),
+                  child: TextFormField(
+                    initialValue: _innitValues['email'],
                     keyboardType: TextInputType.text,
                     decoration: const InputDecoration(
                       labelStyle: TextStyle(fontSize: 15),
@@ -250,6 +389,7 @@ class _CreateProfileState extends State<CreateProfile> {
                     vertical: 10,
                   ),
                   child: TextFormField(
+                    initialValue: _innitValues['bio'],
                     keyboardType: TextInputType.text,
                     decoration: const InputDecoration(
                       labelStyle: TextStyle(fontSize: 15),

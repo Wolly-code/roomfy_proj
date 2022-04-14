@@ -5,35 +5,48 @@ import '../../providers/tenant.dart';
 class UserTenantItem extends StatelessWidget {
   final String title;
   final String id;
+  final String description;
+  final String photo1;
 
-  const UserTenantItem({Key? key, required this.title, required this.id})
+  const UserTenantItem(
+      {Key? key,
+      required this.title,
+      required this.id,
+      required this.description,
+      required this.photo1})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final scaffold = Scaffold.of(context);
-    return ListTile(
-      title: Text(title),
-      leading: const CircleAvatar(
-        backgroundImage: NetworkImage(
-          'https://media.istockphoto.com/photos/funny-best-friends-concept-human-taking-a-selfie-with-dog-picture-id1024311036?k=20&m=1024311036&s=612x612&w=0&h=vZkjFMmxmj2VPHfcuRSz6LLwoOEkFHPtvWVCs5ytTQQ=',
-        ),
-      ),
-      trailing: SizedBox(
-        width: 100,
-        child: Row(
-          children: [
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.edit),
+    return Card(
+      child: Column(
+        children: [
+          ClipRRect(
+            child: GestureDetector(
+              onTap: () {
+                // Navigator.of(context)
+                //     .pushNamed(UserRoomDetailScreen.routeName, arguments: id);
+              },
+              child: Image.network(
+                photo1,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: 150,
+              ),
             ),
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.delete),
-              color: Theme.of(context).errorColor,
-            ),
-          ],
-        ),
+          ),
+          Text(
+            title,
+            style: const TextStyle(fontSize: 20),
+          ),
+          const Divider(),
+          Text(
+            description,
+            maxLines: 2,
+            textAlign: TextAlign.justify,
+          )
+        ],
       ),
     );
   }

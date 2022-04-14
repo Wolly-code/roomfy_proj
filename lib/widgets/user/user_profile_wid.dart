@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:roomfy_proj/screens/user/create_profile.dart';
-import 'package:roomfy_proj/screens/user/view_user_profile.dart';
+import 'package:roomfy_proj/widgets/user/view_user_profile.dart';
 
 import '../../providers/user.dart';
 import '../../screens/user/user_profile_overview.dart';
@@ -19,7 +19,7 @@ class UserProfileWid extends StatelessWidget {
               Navigator.of(context)
                   .pushReplacementNamed(CreateProfile.routeName);
             },
-            child: Text('Create User'))
+            child: const Text('Create User'))
         : ViewUserProfile(user: user);
   }
 }

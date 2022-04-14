@@ -13,7 +13,9 @@ class User with ChangeNotifier {
   final String userId;
   final String bio;
   final String email;
+   String gender;
   final String profile;
+  final String location;
 
   User(
       {required this.id,
@@ -23,7 +25,9 @@ class User with ChangeNotifier {
       required this.userId,
       required this.bio,
       required this.email,
-      required this.profile});
+      required this.gender,
+      required this.profile,
+      required this.location});
 }
 
 class Users with ChangeNotifier {
@@ -53,14 +57,17 @@ class Users with ChangeNotifier {
       for (var i = 0; i < extractedData.length; i++) {
         var currentElement = extractedData[i];
         loadedUser.add(User(
-            id: currentElement['id'].toString(),
-            firstName: currentElement['first_name'],
-            lastName: currentElement['last_name'],
-            phoneNumber: currentElement['phone_number'],
-            userId: currentElement['user'],
-            bio: currentElement['bio'],
-            email: currentElement['email'],
-            profile: currentElement['profile_pic']));
+          id: currentElement['id'].toString(),
+          firstName: currentElement['first_name'],
+          lastName: currentElement['last_name'],
+          phoneNumber: currentElement['phone_number'],
+          userId: currentElement['user'],
+          bio: currentElement['bio'],
+          email: currentElement['email'],
+          profile: currentElement['profile_pic'],
+          gender: currentElement['gender'],
+          location: currentElement['location'],
+        ));
         userObj = User(
             id: currentElement['id'].toString(),
             firstName: currentElement['first_name'],
@@ -69,7 +76,9 @@ class Users with ChangeNotifier {
             userId: currentElement['user'],
             bio: currentElement['bio'],
             email: currentElement['email'],
-            profile: currentElement['profile_pic']);
+            profile: currentElement['profile_pic'],
+            gender: currentElement['gender'],
+            location: currentElement['location']);
       }
       _user = loadedUser.reversed.toList();
       notifyListeners();
@@ -91,6 +100,8 @@ class Users with ChangeNotifier {
       request.fields["phone_number"] = user.phoneNumber;
       request.fields["bio"] = user.bio;
       request.fields["email"] = user.email;
+      request.fields["location"] = user.location;
+      request.fields["gender"] = user.gender;
       var multipartFile = http.MultipartFile('profile_pic', stream, length,
           filename: basename(photo.path));
       request.files.add(multipartFile);
@@ -99,5 +110,54 @@ class Users with ChangeNotifier {
     } catch (error) {
       rethrow;
     }
+  }
+
+  Future<void> updateUserWithPhoto(User user, File photo, String id, String gender) async {
+    Uri url = Uri.parse('http://10.0.2.2:8000/api/profile/$id');
+    try {
+      var stream = http.ByteStream(DelegatingStream.typed(photo.openRead()));
+      var length = await photo.length();
+      var request = http.MultipartRequest("PUT", url);
+      request.headers["authorization"] = 'Token $authToken';
+      request.fields["first_name"] = user.firstName;
+      request.fields["last_name"] = user.lastName;
+      request.fields["phone_number"] = user.phoneNumber;
+      request.fields["bio"] = user.bio;
+      request.fields["email"] = user.email;
+      request.fields["location"] = user.location;
+      request.fields["gender"] = gender;
+      var multipartFile = http.MultipartFile('profile_pic', stream, length,
+          filename: basename(photo.path));
+      request.files.add(multipartFile);
+      var response = await request.send();
+      final respStr = await response.stream.bytesToString();
+      print(response.statusCode);
+      print(respStr);
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  Future<void> updateUserWithoutPhoto(User user, String id,String gender) async {
+    Uri url = Uri.parse('http://10.0.2.2:8000/api/profile/$id');
+    try {
+      var response = await http.patch(url,
+          headers: {
+            'Authorization': 'Token $authToken',
+            'Content-Type': 'application/json'
+
+          },
+          body: json.encode({
+            'first_name': user.firstName,
+            'last_name': user.lastName,
+            'phone_number': user.phoneNumber,
+            'bio': user.bio,
+            'email': user.email,
+            'gender': gender,
+            'location': user.lastName,
+          }));
+      print(response.statusCode);
+      print(response.body);
+    } catch (e) {}
   }
 }

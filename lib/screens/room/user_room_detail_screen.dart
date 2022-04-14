@@ -91,7 +91,9 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
           'Advert#' + _editedRoom.id.toString(),
         ),
         centerTitle: true,
-        actions: [TextButton(onPressed: _saveForm, child: Text('Update Ad'))],
+        actions: [
+          TextButton(onPressed: _saveForm, child: const Text('Update Ad'))
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(

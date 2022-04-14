@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:roomfy_proj/providers/room.dart';
-import 'package:roomfy_proj/screens/room/edit_room_screen.dart';
 import 'package:roomfy_proj/screens/room/user_room_detail_screen.dart';
 
 class UserRoomItem extends StatelessWidget {
