@@ -14,12 +14,28 @@ class UserProfileWid extends StatelessWidget {
     final userData = Provider.of<Users>(context);
     final user = userData.userObj;
     return user == null
-        ? TextButton(
-            onPressed: () {
-              Navigator.of(context)
-                  .pushReplacementNamed(CreateProfile.routeName);
-            },
-            child: const Text('Create User'))
+        ? Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 15.0),
+              child: Text(
+                "Oops! You don't Have a User Profile...",
+                style: TextStyle(
+                  fontSize: 21,
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 100,
+            ),
+            Center(
+              child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context)
+                        .pushReplacementNamed(CreateProfile.routeName);
+                  },
+                  child: const Text('Create User')),
+            ),
+          ])
         : ViewUserProfile(user: user);
   }
 }

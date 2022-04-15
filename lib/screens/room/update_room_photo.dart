@@ -5,15 +5,15 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:roomfy_proj/providers/room.dart';
 
-class UpdateImage extends StatefulWidget {
-  const UpdateImage({Key? key}) : super(key: key);
+class UpdateRoomImage extends StatefulWidget {
+  const UpdateRoomImage({Key? key}) : super(key: key);
   static const routeName = '/Update-Room-Image';
 
   @override
-  State<UpdateImage> createState() => _UpdateImageState();
+  State<UpdateRoomImage> createState() => _UpdateRoomImageState();
 }
 
-class _UpdateImageState extends State<UpdateImage> {
+class _UpdateRoomImageState extends State<UpdateRoomImage> {
   final _form = GlobalKey<FormState>();
   Room? room;
   bool _innit = true;
@@ -61,6 +61,7 @@ class _UpdateImageState extends State<UpdateImage> {
     try {
       await Provider.of<Rooms>(context, listen: false)
           .updateRoomPhoto(_photo1Stored!, _photo2Stored!, room!.id);
+      await Provider.of<Rooms>(context, listen: false).fetchAndSetRoom();
       Navigator.of(context).pop();
     } catch (error) {
       rethrow;
@@ -80,8 +81,8 @@ class _UpdateImageState extends State<UpdateImage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-           const Padding(
-            padding:EdgeInsets.all(10.0),
+          const Padding(
+            padding: EdgeInsets.all(10.0),
             child: Center(
               child: Text(
                 'Your Current Images',

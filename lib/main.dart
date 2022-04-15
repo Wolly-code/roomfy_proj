@@ -20,6 +20,7 @@ import 'package:roomfy_proj/screens/tenant/post_tenant_ad.dart';
 import 'package:roomfy_proj/screens/tenant/tenant_detail_screen.dart';
 import 'package:roomfy_proj/screens/tenant/tenant_overview_screen.dart';
 import 'package:roomfy_proj/screens/room/user_room_screen.dart';
+import 'package:roomfy_proj/screens/tenant/user_tenant_detail_screen.dart';
 import 'package:roomfy_proj/screens/tenant/user_tenant_screen.dart';
 import 'package:roomfy_proj/screens/user/create_profile.dart';
 import 'package:roomfy_proj/screens/user/user_profile_overview.dart';
@@ -99,9 +100,11 @@ class MyApp extends StatelessWidget {
             PostTenantAd.routeName: (ctx) => const PostTenantAd(),
             UserRoomDetailScreen.routeName: (ctx) =>
                 const UserRoomDetailScreen(),
-            UpdateImage.routeName: (ctx) => const UpdateImage(),
+            UpdateRoomImage.routeName: (ctx) => const UpdateRoomImage(),
             UserProfileOverview.routeName: (ctx) => const UserProfileOverview(),
-            CreateProfile.routeName:(ctx)=> const CreateProfile(),
+            CreateProfile.routeName: (ctx) => const CreateProfile(),
+            UserTenantDetailScreen.routeName: (ctx) =>
+                const UserTenantDetailScreen(),
           },
         ),
       ),

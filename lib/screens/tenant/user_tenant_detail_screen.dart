@@ -4,18 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:roomfy_proj/providers/tenant.dart';
-import 'dart:developer';
 
-class PostTenantAd extends StatefulWidget {
-  const PostTenantAd({Key? key}) : super(key: key);
-  static const routeName = '/post-tenant-ad';
+class UserTenantDetailScreen extends StatefulWidget {
+  const UserTenantDetailScreen({Key? key}) : super(key: key);
+  static const routeName = '/User-tenant-detail-screen';
 
   @override
-  _PostTenantAdState createState() => _PostTenantAdState();
+  State<UserTenantDetailScreen> createState() => _UserTenantDetailScreenState();
 }
 
-class _PostTenantAdState extends State<PostTenantAd> {
+class _UserTenantDetailScreenState extends State<UserTenantDetailScreen> {
   final _form = GlobalKey<FormState>();
+  bool _innit = true;
   File? _photo1Stored;
   String? email;
   String? name;
@@ -26,9 +26,28 @@ class _PostTenantAdState extends State<PostTenantAd> {
   String? location;
   String? description;
   int? budget;
+  bool petOwner = false;
   String? preference;
   String? title;
-  bool petOwner = false;
+  String photo = 'https://img.icons8.com/color/344/user.png';
+  Tenant _editedTenant = Tenant(
+      id: '',
+      fullName: '',
+      poster: '',
+      gender: '',
+      phoneNumber: '',
+      occupation: '',
+      age: 0,
+      petOwner: false,
+      location: '',
+      budget: 0,
+      preference: '',
+      title: '',
+      description: '',
+      created: '',
+      status: false,
+      photo1: '',
+      email: '');
 
   Future<void> _photo1() async {
     final picker = ImagePicker();
@@ -67,91 +86,66 @@ class _PostTenantAdState extends State<PostTenantAd> {
   String occupationSelectedValue = "Student";
   String occupationDropDownValue = 'Student';
 
+  @override
+  void didChangeDependencies() {
+    if (_innit) {
+      final String? tenantID =
+          ModalRoute.of(context)!.settings.arguments as String;
+      final temp = Provider.of<Tenants>(context).findByID(tenantID!);
+      _editedTenant = temp;
+      photo = _editedTenant.photo1;
+    }
+    _innit = false;
+    super.didChangeDependencies();
+  }
+
   Future<void> _saveForm() async {
     final isValid = _form.currentState!.validate();
     if (!isValid) {
       return;
     }
     _form.currentState!.save();
-    try {
-      var tenant = Tenant(
+    var tenant = Tenant(
         id: '',
         fullName: name.toString(),
+        email: email.toString(),
         poster: '',
-        gender: gender.toString(),
+        gender: '',
         phoneNumber: phoneNumber.toString(),
         occupation: occupation.toString(),
-        age: int.parse(age.toString()),
+        age: age!,
         petOwner: petOwner,
-        location: location.toString(),
-        budget: int.parse(budget.toString()),
-        preference: preference.toString(),
-        title: title.toString(),
-        description: description.toString(),
+        location: location!,
+        budget: budget!,
+        preference: preference!,
+        title: title!,
+        description: description!,
         created: '',
-        status: true,
-        photo1: '',
-        email: email.toString(),
-      );
-      if (_photo1Stored == null) {
-        await showDialog<Null>(
-            context: context,
-            builder: (BuildContext context) => AlertDialog(
-                  title: const Text('No Photo Found'),
-                  content: const Text('You forgot to upload your image'),
-                  actions: [
-                    TextButton(
-                        child: const Text('Okay'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        })
-                  ],
-                ));
-      } else {
-        if (gender == null || occupation == null) {
-          gender = gender == null ? gender = 'Male' : gender = gender;
-          occupation = occupation == null
-              ? occupation = 'Student'
-              : occupation = occupation;
-          await Provider.of<Tenants>(context, listen: false)
-              .addTenantAd(tenant, _photo1Stored!, gender!, occupation!);
-        } else {
-          await Provider.of<Tenants>(context, listen: false)
-              .addTenantAd(tenant, _photo1Stored!, gender!, occupation!);
-        }
-        // Navigator.of(context).pop();
-      }
-    } catch (error) {
-      await showDialog<Null>(
-          context: context,
-          builder: (BuildContext context) => AlertDialog(
-                title: const Text('An Error Occurred'),
-                content: const Text('Something Went wrong'),
-                actions: [
-                  TextButton(
-                      child: const Text('Okay'),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      })
-                ],
-              ));
+        status: _editedTenant.status,
+        photo1: '');
+    gender ??= _editedTenant.gender;
+    occupation ??= _editedTenant.occupation;
+    if (_photo1Stored != null) {
+      await Provider.of<Tenants>(context, listen: false).updateTenantwithPhoto(
+          tenant, _photo1Stored!, _editedTenant.id, gender!, occupation!);
+    } else {
+      await Provider.of<Tenants>(context, listen: false)
+          .updateTenantWithoutPhoto(
+              tenant, _editedTenant.id, gender!, occupation!);
     }
+    Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
+    String textButton = _editedTenant.status ? 'Deactivate' : 'Activate';
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Details'),
-        backgroundColor: Theme.of(context).primaryColor,
+        title: Text(_editedTenant.title),
+        centerTitle: true,
         actions: [
-          TextButton(
-            onPressed: _saveForm,
-            child: const Padding(
-              padding: EdgeInsets.all(9),
-              child: Text('Place Ad'),
-            ),
-          )
+          TextButton(onPressed: _saveForm, child: const Text('Update'))
         ],
       ),
       body: SingleChildScrollView(
@@ -162,12 +156,129 @@ class _PostTenantAdState extends State<PostTenantAd> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                        onPressed: () async {
+                          final snackBar = SnackBar(
+                            duration: const Duration(seconds: 2),
+                            content: Text(
+                                'Your Advertisement has been ${textButton}d'),
+                            action: SnackBarAction(
+                              label: 'Undo',
+                              onPressed: () async {
+                                bool newStatus = !_editedTenant.status;
+                                await Provider.of<Tenants>(context,
+                                        listen: false)
+                                    .updateStatus(_editedTenant.id, newStatus);
+                              },
+                            ),
+                          );
+                          setState(() {
+                            if (textButton == 'Deactivate') {
+                              textButton = 'Activate';
+                            } else {
+                              textButton = 'Deactivate';
+                            }
+                          });
+
+                          await Provider.of<Tenants>(context, listen: false)
+                              .updateStatus(
+                                  _editedTenant.id, _editedTenant.status);
+
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        },
+                        child: Text(
+                          textButton,
+                          style: const TextStyle(fontSize: 20),
+                        )),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
                 const Text('ABOUT ME'),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Center(
+                    child: SizedBox(
+                      width: 150,
+                      height: 150,
+                      child: _photo1Stored != null
+                          ? Stack(
+                              clipBehavior: Clip.none,
+                              fit: StackFit.expand,
+                              children: [
+                                CircleAvatar(
+                                  backgroundImage: FileImage(_photo1Stored!),
+                                  radius: 200.00,
+                                ),
+                                Positioned(
+                                  right: -16,
+                                  bottom: 0,
+                                  child: SizedBox(
+                                    height: 46,
+                                    width: 46,
+                                    child: FlatButton(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(50),
+                                        side: const BorderSide(
+                                            color: Colors.white),
+                                      ),
+                                      color: const Color(0xFFF5F6F9),
+                                      onPressed: _photo1,
+                                      child: const Center(
+                                          child:
+                                              Icon(Icons.camera_alt_outlined)),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          : Stack(
+                              clipBehavior: Clip.none,
+                              fit: StackFit.expand,
+                              children: [
+                                CircleAvatar(
+                                  backgroundImage: photo != ''
+                                      ? NetworkImage(photo)
+                                      : NetworkImage(photo),
+                                  radius: 200.00,
+                                ),
+                                Positioned(
+                                  right: -16,
+                                  bottom: 0,
+                                  child: SizedBox(
+                                    height: 46,
+                                    width: 46,
+                                    child: FlatButton(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(50),
+                                        side: const BorderSide(
+                                            color: Colors.white),
+                                      ),
+                                      color: const Color(0xFFF5F6F9),
+                                      onPressed: _photo1,
+                                      child: const Center(
+                                          child:
+                                              Icon(Icons.camera_alt_outlined)),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                    ),
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     vertical: 10,
                   ),
                   child: TextFormField(
+                    initialValue: _editedTenant.email,
                     decoration: const InputDecoration(
                       labelStyle: TextStyle(fontSize: 15),
                       labelText: 'Email ',
@@ -189,6 +300,7 @@ class _PostTenantAdState extends State<PostTenantAd> {
                     vertical: 10,
                   ),
                   child: TextFormField(
+                    initialValue: _editedTenant.fullName,
                     decoration: const InputDecoration(
                       labelStyle: TextStyle(fontSize: 15),
                       labelText: 'Full Name ',
@@ -210,6 +322,7 @@ class _PostTenantAdState extends State<PostTenantAd> {
                     vertical: 10,
                   ),
                   child: TextFormField(
+                    initialValue: _editedTenant.phoneNumber,
                     decoration: const InputDecoration(
                       labelStyle: TextStyle(fontSize: 15),
                       labelText: 'Phone Number',
@@ -280,6 +393,7 @@ class _PostTenantAdState extends State<PostTenantAd> {
                     vertical: 10,
                   ),
                   child: TextFormField(
+                    initialValue: _editedTenant.age.toString(),
                     decoration: const InputDecoration(
                       labelStyle: TextStyle(fontSize: 15),
                       labelText: 'Age',
@@ -301,6 +415,7 @@ class _PostTenantAdState extends State<PostTenantAd> {
                     vertical: 10,
                   ),
                   child: TextFormField(
+                    initialValue: _editedTenant.location,
                     decoration: const InputDecoration(
                       labelStyle: TextStyle(fontSize: 15),
                       labelText: 'Location',
@@ -322,6 +437,7 @@ class _PostTenantAdState extends State<PostTenantAd> {
                     vertical: 10,
                   ),
                   child: TextFormField(
+                    initialValue: _editedTenant.description,
                     decoration: const InputDecoration(
                       labelStyle: TextStyle(fontSize: 15),
                       labelText: 'Description',
@@ -343,6 +459,7 @@ class _PostTenantAdState extends State<PostTenantAd> {
                     vertical: 10,
                   ),
                   child: TextFormField(
+                    initialValue: _editedTenant.budget.toString(),
                     decoration: const InputDecoration(
                       labelStyle: TextStyle(fontSize: 15),
                       labelText: 'Budget',
@@ -364,6 +481,7 @@ class _PostTenantAdState extends State<PostTenantAd> {
                     vertical: 10,
                   ),
                   child: TextFormField(
+                    initialValue: _editedTenant.preference,
                     decoration: const InputDecoration(
                       labelStyle: TextStyle(fontSize: 15),
                       labelText: 'Preference',
@@ -385,6 +503,7 @@ class _PostTenantAdState extends State<PostTenantAd> {
                     vertical: 10,
                   ),
                   child: TextFormField(
+                    initialValue: _editedTenant.title,
                     decoration: const InputDecoration(
                       labelStyle: TextStyle(fontSize: 15),
                       labelText: 'Title',
@@ -411,7 +530,7 @@ class _PostTenantAdState extends State<PostTenantAd> {
                       Text('Pet Owner'),
                     ],
                   ),
-                  value: petOwner,
+                  value: _editedTenant.petOwner,
                   onChanged: (value) {
                     setState(() {
                       petOwner = value is bool ? value : false;
@@ -419,41 +538,54 @@ class _PostTenantAdState extends State<PostTenantAd> {
                   },
                 ),
                 const Divider(),
-                const Text(
-                  'PHOTOS',
-                  style: TextStyle(fontSize: 15),
-                ),
                 Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 1, color: Colors.grey),
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.red, // background// foreground
                       ),
-                      child: _photo1Stored != null
-                          ? GestureDetector(
-                              onTap: () async {
-                                _photo1();
-                              },
-                              child: Image.file(
-                                _photo1Stored!,
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                              ),
-                            )
-                          : Container(
-                              height: 100,
-                              width: 100,
-                              child: IconButton(
-                                onPressed: () async {
-                                  _photo1();
-                                },
-                                icon: const Icon(Icons.add),
-                              ),
-                              decoration: BoxDecoration(border: Border.all()),
-                            ),
-                    ))
+                      onPressed: () async {
+                        await showDialog<Null>(
+                            context: context,
+                            builder: (BuildContext context) => AlertDialog(
+                                  title: const Text('Delete Post'),
+                                  content: const Text(
+                                      'Are you sure you want to delete your post?'),
+                                  actions: [
+                                    TextButton(
+                                        child: const Text('Yes'),
+                                        onPressed: () {
+                                          Provider.of<Tenants>(context,
+                                                  listen: false)
+                                              .deleteTenant(_editedTenant.id);
+                                          const snackBar = SnackBar(
+                                            duration: Duration(seconds: 2),
+                                            content: Text(
+                                                'Your Advertisement has been deleted'),
+                                          );
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(snackBar);
+                                          Navigator.of(context).pop();
+                                        }),
+                                    TextButton(
+                                        child: const Text('No'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        })
+                                  ],
+                                ));
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text(
+                        'Remove Advertisement',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

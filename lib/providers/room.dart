@@ -16,7 +16,7 @@ class Room with ChangeNotifier {
   final String email;
   final String phoneNumber;
   final String location;
-  final String propertyType;
+   final String propertyType;
   final int totalRooms;
   final int price;
   final int securityDeposit;
@@ -80,7 +80,7 @@ class Rooms with ChangeNotifier {
   Future<void> fetchAndSetRoom() async {
     Uri url = Uri.parse('http://10.0.2.2:8000/rooms/viewall');
     final response =
-    await http.get(url, headers: {'Authorization': 'Token $authToken'});
+        await http.get(url, headers: {'Authorization': 'Token $authToken'});
     final List<Room> loadedRoom = [];
     try {
       final extractedData = json.decode(response.body);
@@ -121,6 +121,7 @@ class Rooms with ChangeNotifier {
       rethrow;
     }
   }
+
   Future<void> addRoom(Room room, File photo1, File photo2) async {
     Uri url = Uri.parse('http://10.0.2.2:8000/rooms/viewall');
     try {
@@ -187,17 +188,13 @@ class Rooms with ChangeNotifier {
 
   Future<void> deleteRoom(String id) async {
     Uri url = Uri.parse('http://10.0.2.2:8000/rooms/$id');
-    final existingRoomIndex = _rooms.indexWhere((room) => room.id == id);
-    Room? existingRoom = _rooms[existingRoomIndex];
-    _rooms.insert(existingRoomIndex, existingRoom);
-    notifyListeners();
-    _rooms.removeAt(existingRoomIndex);
     final response =
         await http.delete(url, headers: {'Authorization': 'Token $authToken'});
     if (response.statusCode >= 400) {
       throw HttpException('Could not delete room');
     }
-    existingRoom = null;
+    await fetchAndSetRoom();
+    notifyListeners();
   }
 
   Future<void> updateRoomDetail(String id, Room room) async {
@@ -232,6 +229,7 @@ class Rooms with ChangeNotifier {
       } catch (err) {
         rethrow;
       }
+      await fetchAndSetRoom();
       notifyListeners();
     } else {}
   }
@@ -259,6 +257,7 @@ class Rooms with ChangeNotifier {
     } catch (exp) {
       rethrow;
     }
+    await fetchAndSetRoom();
     notifyListeners();
   }
 }

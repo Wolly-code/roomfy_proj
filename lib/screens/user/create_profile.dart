@@ -96,15 +96,39 @@ class _CreateProfileState extends State<CreateProfile> {
       if (_photo1Stored != null) {
         await Provider.of<Users>(context, listen: false).updateUserWithPhoto(
             users, _photo1Stored!, _editedUser.id, gender.toString());
+        Navigator.of(context).pop();
       } else {
         await Provider.of<Users>(context, listen: false)
             .updateUserWithoutPhoto(users, _editedUser.id, gender.toString());
+        Navigator.of(context).pop();
       }
     } else {
       try {
-        await Provider.of<Users>(context, listen: false)
-            .addUser(users, _photo1Stored!);
-        Navigator.of(context).pop();
+        if (_photo1Stored == null) {
+          await showDialog<Null>(
+              context: context,
+              builder: (BuildContext context) => AlertDialog(
+                    title: const Text('No Photo Found'),
+                    content: const Text('You forgot to upload your image'),
+                    actions: [
+                      TextButton(
+                          child: const Text('Okay'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          })
+                    ],
+                  ));
+        } else {
+          if (gender == null) {
+            gender = 'Male';
+            await Provider.of<Users>(context, listen: false)
+                .addUser(users, _photo1Stored!, gender!);
+          } else {
+            await Provider.of<Users>(context, listen: false)
+                .addUser(users, _photo1Stored!, gender!);
+          }
+          Navigator.of(context).pop();
+        }
       } catch (e) {
         await showDialog<Null>(
             context: context,

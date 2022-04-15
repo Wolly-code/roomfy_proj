@@ -9,7 +9,7 @@ class TenantGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tenantData = Provider.of<Tenants>(context);
-    final tenant = tenantData.tenants;
+    final tenant = tenantData.displayTenants;
     return tenant.isEmpty
         ? const Center(
           child: Text('NO TENANT DATA AVAILABLE'),

@@ -9,6 +9,7 @@ import 'package:roomfy_proj/exceptions/http_exception.dart';
 class Tenant with ChangeNotifier {
   final String id;
   final String fullName;
+  final String email;
   final String poster;
   final String gender;
   final String phoneNumber;
@@ -27,6 +28,7 @@ class Tenant with ChangeNotifier {
   Tenant({
     required this.id,
     required this.fullName,
+    required this.email,
     required this.poster,
     required this.gender,
     required this.phoneNumber,
@@ -49,11 +51,16 @@ class Tenants with ChangeNotifier {
   List<Tenant> _owned = [];
   final String authToken;
   final String userId;
+  List<Tenant> _displayTenants = [];
 
   Tenants(this.authToken, this.userId, this._tenants);
 
   List<Tenant> get owned {
     return [..._owned];
+  }
+
+  List<Tenant> get displayTenants {
+    return [..._displayTenants];
   }
 
   List<Tenant> get tenants {
@@ -90,7 +97,10 @@ class Tenants with ChangeNotifier {
           created: currentElement['created'],
           status: currentElement['status'],
           photo1: currentElement['photo1'],
+          email: currentElement['email'],
         ));
+        _displayTenants =
+            loadedTenant.where((element) => element.status == true).toList();
         _owned =
             loadedTenant.where((element) => element.poster == userId).toList();
         _tenants = loadedTenant.reversed.toList();
@@ -101,51 +111,40 @@ class Tenants with ChangeNotifier {
     }
   }
 
-  Future<void> deleteRoom(String id) async {
+  Future<void> deleteTenant(String id) async {
     Uri url = Uri.parse('http://10.0.2.2:8000/tenant/$id');
-    final existingTenantIndex =
-        _tenants.indexWhere((element) => element.id == id);
-    Tenant? existingTenant = _tenants[existingTenantIndex];
-    _tenants.insert(existingTenantIndex, existingTenant);
-    notifyListeners();
-    _tenants.removeAt(existingTenantIndex);
     final response =
         await http.delete(url, headers: {'Authorization': 'Token $authToken'});
     if (response.statusCode >= 400) {
       throw HttpException('Could not delete tenant');
     }
-    existingTenant = null;
+    await fetchAndSetTenant();
+    notifyListeners();
   }
 
-  Future<void> updateTenant(String id, Tenant tenant) async {
-    final tenantIndex = _tenants.indexWhere((element) => element.id == id);
-    if (tenantIndex >= 0) {
-      Uri url = Uri.parse('http://10.0.2.2:8000/tenant/$id');
-      http.patch(url,
-          body: json.encode({
-            'full_name': tenant.title,
-            'gender': tenant.gender,
-            'phone_number': tenant.phoneNumber,
-            'occupation': tenant.occupation,
-            'age': tenant.age,
-            'pet_owner': tenant.petOwner,
-            'location': tenant.location,
-            'Budget': tenant.budget,
-            'Preference': tenant.preference,
-            'Title': tenant.title,
-            'description': tenant.description,
-            'status': tenant.status,
-          }),
+  Future<void> updateStatus(String id, bool status) async {
+    Uri url = Uri.parse('http://10.0.2.2:8000/tenant/$id');
+    bool newStatus = !status;
+    try {
+      final response = await http.patch(url,
           headers: {
             'Authorization': 'Token $authToken',
             'Content-Type': 'application/json'
-          });
-      _tenants[tenantIndex] = tenant;
-      notifyListeners();
-    } else {}
+          },
+          body: json.encode({
+            "status": newStatus,
+          }));
+      print(response.statusCode);
+      print(response.body);
+    } catch (exp) {
+      rethrow;
+    }
+    await fetchAndSetTenant();
+    notifyListeners();
   }
 
-  Future<void> addTenantAd(Tenant tenant, File photo1) async {
+  Future<void> addTenantAd(
+      Tenant tenant, File photo1, String gender, String occupation) async {
     Uri url = Uri.parse('http://10.0.2.2:8000/tenant/viewall');
     try {
       var stream = http.ByteStream(DelegatingStream.typed(photo1.openRead()));
@@ -157,67 +156,87 @@ class Tenants with ChangeNotifier {
       request.fields['phone_number'] = tenant.phoneNumber;
       request.fields['location'] = tenant.location;
       request.fields['full_name'] = tenant.fullName;
-      request.fields['gender'] = tenant.gender;
-      request.fields['occupation'] = tenant.occupation;
+      request.fields['gender'] = gender;
+      request.fields['occupation'] = occupation;
       request.fields['age'] = tenant.age.toString();
       request.fields['pet_owner'] = tenant.petOwner.toString();
       request.fields['Budget'] = tenant.budget.toString();
+      request.fields['email'] = tenant.email;
       request.fields['Preference'] = tenant.preference.toString();
       request.fields['status'] = tenant.status.toString();
       var multipartFile1 = http.MultipartFile('photo1', stream, length,
           filename: basename(photo1.path));
       request.files.add(multipartFile1);
       var response = await request.send();
+      final respStr = await response.stream.bytesToString();
       print(response);
+      print(respStr);
     } catch (error) {
       rethrow;
     }
     notifyListeners();
   }
 
-  Future<void> addTenant(Tenant tenant) async {
-    Uri url = Uri.parse('http://10.0.2.2:8000/tenant/viewall');
+  Future<void> updateTenantwithPhoto(Tenant tenant, File photo, String id,
+      String gender, String occupation) async {
+    Uri url = Uri.parse('http://10.0.2.2:8000/tenant/$id');
     try {
-      final response = await http.post(url,
+      var stream = http.ByteStream(DelegatingStream.typed(photo.openRead()));
+      var length = await photo.length();
+      var request = http.MultipartRequest("PUT", url);
+      request.headers["authorization"] = 'Token $authToken';
+      request.fields['Title'] = tenant.title;
+      request.fields['description'] = tenant.description;
+      request.fields['phone_number'] = tenant.phoneNumber;
+      request.fields['location'] = tenant.location;
+      request.fields['full_name'] = tenant.fullName;
+      request.fields['gender'] = gender;
+      request.fields['occupation'] = occupation;
+      request.fields['age'] = tenant.age.toString();
+      request.fields['pet_owner'] = tenant.petOwner.toString();
+      request.fields['Budget'] = tenant.budget.toString();
+      request.fields['email'] = tenant.email;
+      request.fields['Preference'] = tenant.preference.toString();
+      request.fields['status'] = tenant.status.toString();
+      var multipartFile1 = http.MultipartFile('photo1', stream, length,
+          filename: basename(photo.path));
+      request.files.add(multipartFile1);
+      var response = await request.send();
+      final respStr = await response.stream.bytesToString();
+    } catch (error) {
+      rethrow;
+    }
+    await fetchAndSetTenant();
+    notifyListeners();
+  }
+
+  Future<void> updateTenantWithoutPhoto(
+      Tenant tenant, String id, String gender, String occupation) async {
+    Uri url = Uri.parse('http://10.0.2.2:8000/tenant/$id');
+    try {
+      var response = await http.patch(url,
           headers: {
             'Authorization': 'Token $authToken',
             'Content-Type': 'application/json'
           },
           body: json.encode({
-            'full_name': tenant.title,
-            'gender': tenant.gender,
-            'phone_number': tenant.phoneNumber,
-            'occupation': tenant.occupation,
-            'age': tenant.age,
-            'pet_owner': tenant.petOwner,
-            'location': tenant.location,
-            'Budget': tenant.budget,
-            'Preference': tenant.preference,
             'Title': tenant.title,
             'description': tenant.description,
-            'status': tenant.status,
+            'phone_number': tenant.phoneNumber,
+            'location': tenant.location,
+            'full_name': tenant.fullName,
+            'gender': gender,
+            'occupation': occupation,
+            'age': tenant.age,
+            'pet_owner': tenant.petOwner,
+            'Budget': tenant.budget,
+            'email': tenant.email,
+            'Preference': tenant.preference,
           }));
-      final res = json.decode(response.body);
-      final newTenant = Tenant(
-          id: res['id'].toString(),
-          fullName: tenant.fullName,
-          poster: res['poster'],
-          gender: tenant.gender,
-          phoneNumber: tenant.phoneNumber,
-          occupation: tenant.occupation,
-          age: tenant.age,
-          petOwner: tenant.petOwner,
-          location: tenant.location,
-          budget: tenant.budget,
-          preference: tenant.preference,
-          title: tenant.title,
-          description: tenant.description,
-          created: res['created'],
-          status: tenant.status,
-          photo1: res['photo1']);
-      _tenants.add(newTenant);
-    } catch (error) {
+    } catch (e) {
       rethrow;
     }
+    await fetchAndSetTenant();
+    notifyListeners();
   }
 }

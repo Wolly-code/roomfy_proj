@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:roomfy_proj/providers/tenant.dart';
+import 'package:roomfy_proj/screens/post_ad.dart';
 import 'package:roomfy_proj/widgets/tenant/user_tenant_item.dart';
 import '../../screens/app_drawer.dart';
-import 'edit_tenant_screen.dart';
 
 class UserTenantScreen extends StatefulWidget {
   const UserTenantScreen({Key? key}) : super(key: key);
@@ -31,7 +31,9 @@ class _UserTenantScreenState extends State<UserTenantScreen> {
     final roomData = Provider.of<Tenants>(context);
     return Scaffold(
       floatingActionButton: IconButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).pushNamed(PostAd.routeName);
+        },
         icon: const Icon(Icons.add),
       ),
       body: FutureBuilder(

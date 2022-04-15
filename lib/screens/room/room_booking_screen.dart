@@ -41,7 +41,8 @@ class _BookingScreenState extends State<BookingScreen> {
         title: Text(title),
         actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.add))],
       ),
-      body: Padding(
+      body:
+      Padding(
         padding: const EdgeInsets.all(15),
         child: Form(
           key: _form,

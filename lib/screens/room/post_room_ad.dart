@@ -78,7 +78,7 @@ class _PostRoomAdState extends State<PostRoomAd> {
     try {
       await Provider.of<Rooms>(context, listen: false)
           .addRoom(_editedRoom, _photo1Stored!, _photo2Stored!);
-      // Navigator.of(context).pop();
+      Navigator.of(context).pop();
     } catch (error) {
       rethrow;
     }
@@ -116,7 +116,6 @@ class _PostRoomAdState extends State<PostRoomAd> {
                       decoration: const InputDecoration(
                         labelStyle: TextStyle(fontSize: 15),
                         labelText: 'Phone Number',
-                        hintText: 'Optional',
                         border: OutlineInputBorder(),
                       ),
                       validator: (value) {
@@ -157,7 +156,6 @@ class _PostRoomAdState extends State<PostRoomAd> {
                     decoration: const InputDecoration(
                       labelStyle: TextStyle(fontSize: 15),
                       labelText: 'Email',
-                      hintText: 'Optional',
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
@@ -267,30 +265,58 @@ class _PostRoomAdState extends State<PostRoomAd> {
                                 setState(() {
                                   selectedValue = newValue!;
                                 });
-                                _editedRoom = Room(
-                                  id: _editedRoom.id,
-                                  title: _editedRoom.title,
-                                  poster: _editedRoom.poster,
-                                  posterId: _editedRoom.posterId,
-                                  description: _editedRoom.description,
-                                  created: _editedRoom.created,
-                                  email: _editedRoom.email,
-                                  phoneNumber: _editedRoom.phoneNumber,
-                                  location: _editedRoom.location,
-                                  propertyType: newValue.toString(),
-                                  totalRooms: _editedRoom.totalRooms,
-                                  price: _editedRoom.price,
-                                  internet: _editedRoom.internet,
-                                  parking: _editedRoom.parking,
-                                  balcony: _editedRoom.balcony,
-                                  yard: _editedRoom.yard,
-                                  disableAccess: _editedRoom.disableAccess,
-                                  garage: _editedRoom.garage,
-                                  status: _editedRoom.status,
-                                  photo1: '',
-                                  photo2: '',
-                                  securityDeposit: _editedRoom.securityDeposit,
-                                );
+                                if(newValue!=null){
+                                  _editedRoom = Room(
+                                    id: _editedRoom.id,
+                                    title: _editedRoom.title,
+                                    poster: _editedRoom.poster,
+                                    posterId: _editedRoom.posterId,
+                                    description: _editedRoom.description,
+                                    created: _editedRoom.created,
+                                    email: _editedRoom.email,
+                                    phoneNumber: _editedRoom.phoneNumber,
+                                    location: _editedRoom.location,
+                                    propertyType: newValue.toString(),
+                                    totalRooms: _editedRoom.totalRooms,
+                                    price: _editedRoom.price,
+                                    internet: _editedRoom.internet,
+                                    parking: _editedRoom.parking,
+                                    balcony: _editedRoom.balcony,
+                                    yard: _editedRoom.yard,
+                                    disableAccess: _editedRoom.disableAccess,
+                                    garage: _editedRoom.garage,
+                                    status: _editedRoom.status,
+                                    photo1: '',
+                                    photo2: '',
+                                    securityDeposit: _editedRoom.securityDeposit,
+                                  );
+                                }else{
+                                  _editedRoom = Room(
+                                    id: _editedRoom.id,
+                                    title: _editedRoom.title,
+                                    poster: _editedRoom.poster,
+                                    posterId: _editedRoom.posterId,
+                                    description: _editedRoom.description,
+                                    created: _editedRoom.created,
+                                    email: _editedRoom.email,
+                                    phoneNumber: _editedRoom.phoneNumber,
+                                    location: _editedRoom.location,
+                                    propertyType: 'Apartment',
+                                    totalRooms: _editedRoom.totalRooms,
+                                    price: _editedRoom.price,
+                                    internet: _editedRoom.internet,
+                                    parking: _editedRoom.parking,
+                                    balcony: _editedRoom.balcony,
+                                    yard: _editedRoom.yard,
+                                    disableAccess: _editedRoom.disableAccess,
+                                    garage: _editedRoom.garage,
+                                    status: _editedRoom.status,
+                                    photo1: '',
+                                    photo2: '',
+                                    securityDeposit: _editedRoom.securityDeposit,
+                                  );
+                                }
+
                               }),
                         ),
                       ),

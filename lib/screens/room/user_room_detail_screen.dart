@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:roomfy_proj/providers/room.dart';
 import 'package:roomfy_proj/screens/room/update_room_photo.dart';
+import 'package:roomfy_proj/screens/room/user_room_screen.dart';
 
 class UserRoomDetailScreen extends StatefulWidget {
   const UserRoomDetailScreen({Key? key}) : super(key: key);
@@ -77,6 +78,8 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
     try {
       await Provider.of<Rooms>(context, listen: false)
           .updateRoomDetail(_editedRoom.id, _editedRoom);
+      await Provider.of<Rooms>(context, listen: false).fetchAndSetRoom();
+      Navigator.of(context).pop();
     } catch (error) {
       rethrow;
     }
@@ -726,11 +729,62 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                     const Divider(),
                     const Text('Upload Photo'),
                     TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pushNamed(UpdateImage.routeName,
-                              arguments: _editedRoom.id);
-                        },
-                        child: const Text('Tap to Change Image'))
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(
+                            UpdateRoomImage.routeName,
+                            arguments: _editedRoom.id);
+                      },
+                      child: const Text('Tap to Change Image'),
+                    ),
+                    const Divider(),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.red, // background// foreground
+                          ),
+                          onPressed: () async {
+                            await showDialog<Null>(
+                                context: context,
+                                builder: (BuildContext context) => AlertDialog(
+                                      title: const Text('Delete Post'),
+                                      content: const Text(
+                                          'Are you sure you want to delete your post?'),
+                                      actions: [
+                                        TextButton(
+                                            child: const Text('Yes'),
+                                            onPressed: () {
+                                              Provider.of<Rooms>(context,
+                                                      listen: false)
+                                                  .deleteRoom(_editedRoom.id);
+                                              const snackBar = SnackBar(
+                                                duration: Duration(seconds: 2),
+                                                content: Text(
+                                                    'Your Advertisement has been deleted'),
+                                              );
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(snackBar);
+                                              Navigator.of(context).pop();
+                                            }),
+                                        TextButton(
+                                            child: const Text('No'),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            })
+                                      ],
+                                    ));
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text(
+                            'Remove Advertisement',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
