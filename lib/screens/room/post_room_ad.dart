@@ -238,6 +238,90 @@ class _PostRoomAdState extends State<PostRoomAd> {
                       },
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                        labelStyle: TextStyle(fontSize: 15),
+                        labelText: 'Price',
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please provide a valid location';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _editedRoom = Room(
+                          id: _editedRoom.id,
+                          title: _editedRoom.title,
+                          poster: _editedRoom.poster,
+                          posterId: _editedRoom.posterId,
+                          description: _editedRoom.description,
+                          created: _editedRoom.created,
+                          email: _editedRoom.email,
+                          phoneNumber: _editedRoom.phoneNumber,
+                          location: _editedRoom.location,
+                          propertyType: _editedRoom.propertyType,
+                          totalRooms: _editedRoom.totalRooms,
+                          price: int.parse(value!),
+                          internet: _editedRoom.internet,
+                          parking: _editedRoom.parking,
+                          balcony: _editedRoom.balcony,
+                          yard: _editedRoom.yard,
+                          disableAccess: _editedRoom.disableAccess,
+                          garage: _editedRoom.garage,
+                          status: _editedRoom.status,
+                          photo1: '',
+                          photo2: '',
+                          securityDeposit: _editedRoom.securityDeposit,
+                        );
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                        labelStyle: TextStyle(fontSize: 15),
+                        labelText: 'Security Deposit',
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please provide a valid location';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _editedRoom = Room(
+                          id: _editedRoom.id,
+                          title: _editedRoom.title,
+                          poster: _editedRoom.poster,
+                          posterId: _editedRoom.posterId,
+                          description: _editedRoom.description,
+                          created: _editedRoom.created,
+                          email: _editedRoom.email,
+                          phoneNumber: _editedRoom.phoneNumber,
+                          location: _editedRoom.location,
+                          propertyType: _editedRoom.propertyType,
+                          totalRooms: _editedRoom.totalRooms,
+                          price: _editedRoom.price,
+                          internet: _editedRoom.internet,
+                          parking: _editedRoom.parking,
+                          balcony: _editedRoom.balcony,
+                          yard: _editedRoom.yard,
+                          disableAccess: _editedRoom.disableAccess,
+                          garage: _editedRoom.garage,
+                          status: _editedRoom.status,
+                          photo1: '',
+                          photo2: '',
+                          securityDeposit: int.parse(value!),
+                        );
+                      },
+                    ),
+                  ),
                   const Padding(
                     padding: EdgeInsets.only(bottom: 8.0),
                     child: Text(
@@ -265,7 +349,7 @@ class _PostRoomAdState extends State<PostRoomAd> {
                                 setState(() {
                                   selectedValue = newValue!;
                                 });
-                                if(newValue!=null){
+                                if (newValue != null) {
                                   _editedRoom = Room(
                                     id: _editedRoom.id,
                                     title: _editedRoom.title,
@@ -288,9 +372,10 @@ class _PostRoomAdState extends State<PostRoomAd> {
                                     status: _editedRoom.status,
                                     photo1: '',
                                     photo2: '',
-                                    securityDeposit: _editedRoom.securityDeposit,
+                                    securityDeposit:
+                                        _editedRoom.securityDeposit,
                                   );
-                                }else{
+                                } else {
                                   _editedRoom = Room(
                                     id: _editedRoom.id,
                                     title: _editedRoom.title,
@@ -313,10 +398,10 @@ class _PostRoomAdState extends State<PostRoomAd> {
                                     status: _editedRoom.status,
                                     photo1: '',
                                     photo2: '',
-                                    securityDeposit: _editedRoom.securityDeposit,
+                                    securityDeposit:
+                                        _editedRoom.securityDeposit,
                                   );
                                 }
-
                               }),
                         ),
                       ),

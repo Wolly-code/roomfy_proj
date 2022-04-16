@@ -89,42 +89,42 @@ class _MainViewSmallState extends State<MainViewSmall> {
       ),
       body: FutureBuilder(
         future: _fetchFuture,
-        builder: (ctx, snapshot) =>
-            snapshot.connectionState == ConnectionState.waiting
-                ? const Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : Column(
-                    children: [
-                      Container(
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Hello ' + userName!,
-                          style: const TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.w300,
-                          ),
-                        ),
-                        height: 150,
+        builder: (ctx, snapshot) => snapshot.connectionState ==
+                ConnectionState.waiting
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : Column(
+                children: [
+                  Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Hello ' + userName!,
+                      style: const TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w300,
                       ),
-                      const Divider(),
-                      ListTile(
-                        leading: const Icon(Icons.supervisor_account),
-                        title: const Text('Search For Tenant'),
-                        onTap: () {
-                          Navigator.of(context).pushNamed(TenantView.routeName);
-                        },
-                      ),
-                      const Divider(),
-                      ListTile(
-                        leading: const Icon(Icons.location_searching),
-                        title: const Text('Search For Room'),
-                        onTap: () {
-                          Navigator.of(context).pushNamed(RoomView.routeName);
-                        },
-                      ),
-                    ],
+                    ),
+                    height: 150,
                   ),
+                  const Divider(),
+                  ListTile(
+                    leading: const Icon(Icons.supervisor_account),
+                    title: const Text('Search For Tenant'),
+                    onTap: () {
+                      Navigator.of(context).pushNamed(TenantView.routeName);
+                    },
+                  ),
+                  const Divider(),
+                  ListTile(
+                    leading: const Icon(Icons.location_searching),
+                    title: const Text('Search For Room'),
+                    onTap: () {
+                      Navigator.of(context).pushNamed(RoomView.routeName);
+                    },
+                  ),
+                ],
+              ),
       ),
     );
   }

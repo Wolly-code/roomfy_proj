@@ -1,3 +1,5 @@
+import 'package:esewa_pnp/esewa.dart';
+import 'package:esewa_pnp/esewa_pnp.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -15,8 +17,10 @@ class _BookingScreenState extends State<BookingScreen> {
   var innit = true;
   var title = '';
   final _form = GlobalKey<FormState>();
-  var checkIn = '';
+  String checkIn = '';
   var checkOut = '';
+  String? message;
+  Room? room;
 
   @override
   void didChangeDependencies() {
@@ -24,8 +28,8 @@ class _BookingScreenState extends State<BookingScreen> {
       try {
         final String? roomID =
             ModalRoute.of(context)!.settings.arguments as String;
-        final roomData = Provider.of<Rooms>(context).findByID(roomID!);
-        title = roomData.title;
+        final Room roomData = Provider.of<Rooms>(context).findByID(roomID!);
+        room = roomData;
       } catch (e) {
         rethrow;
       }
@@ -36,22 +40,34 @@ class _BookingScreenState extends State<BookingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ESewaConfiguration _configuration = ESewaConfiguration(
+        clientID: "JB0BBQ4aD0UqIThFJwAKBgAXEUkEGQUBBAwdOgABHD4DChwUAB0R",
+        secretKey: "BhwIWQQADhIYSxILExMcAgFXFhcOBwAKBgAXEQ==",
+        environment: ESewaConfiguration.ENVIRONMENT_TEST //ENVIRONMENT_LIVE
+        );
+    ESewaPnp _eSewaPnp = ESewaPnp(configuration: _configuration);
+    ESewaPayment _payment = ESewaPayment(
+        amount: room!.securityDeposit.toDouble(),
+        productName: "Recharge Card",
+        productID: "RE1",
+        callBackURL: "example.com");
+
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
         actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.add))],
       ),
-      body:
-      Padding(
+      body: Padding(
         padding: const EdgeInsets.all(15),
         child: Form(
           key: _form,
           child: ListView(
             children: [
               TextField(
-                decoration: const InputDecoration(
-                  icon: Icon(Icons.calendar_today),
-                  labelText: "Check Out Date",
+                decoration: InputDecoration(
+                  icon: const Icon(Icons.calendar_today),
+                  labelText:
+                      checkIn == '' ? "Check In Date" : checkIn = checkIn,
                 ),
                 readOnly: true,
                 onTap: () async {
@@ -69,14 +85,14 @@ class _BookingScreenState extends State<BookingScreen> {
                       checkIn =
                           formattedDate; //set output date to TextField value.
                     });
-                  } else {
-                  }
+                  } else {}
                 },
               ),
               TextField(
-                decoration: const InputDecoration(
-                  icon: Icon(Icons.calendar_today),
-                  labelText: "Check Out Date",
+                decoration: InputDecoration(
+                  icon: const Icon(Icons.calendar_today),
+                  labelText:
+                      checkOut == '' ? "Check Out Date" : checkOut = checkOut,
                 ),
                 readOnly: true,
                 onTap: () async {
@@ -96,14 +112,26 @@ class _BookingScreenState extends State<BookingScreen> {
                     //you can implement different kind of Date Format here according to your requirement
 
                     setState(() {
-                      checkIn =
+                      checkOut =
                           formattedDate; //set output date to TextField value.
                     });
                   } else {
                     print("Date is not selected");
                   }
                 },
-              )
+              ),
+              ElevatedButton(
+                  onPressed: () async {
+                    try {
+                      final _res =
+                          await _eSewaPnp.initPayment(payment: _payment);
+                      message = _res.message;
+                      print(message);
+                    } catch (error) {
+                      print('The Transaction was unsuccessful');
+                    }
+                  },
+                  child: const Text('ESEWA')),
             ],
           ),
         ),

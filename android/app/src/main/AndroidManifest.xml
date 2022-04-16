@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.roomfy_proj">
    <application
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:label="roomfy_proj"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
