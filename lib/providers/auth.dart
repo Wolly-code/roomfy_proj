@@ -5,13 +5,12 @@ import 'dart:convert';
 import 'package:roomfy_proj/exceptions/http_exception.dart';
 class Auth with ChangeNotifier {
   String? _token;
-  String? _userId;
-
+  String? _userName;
   bool get isAuth {
     return token != null;
   }
   String? get userId {
-    return _userId;
+    return _userName;
   }
   String? get token {
     return _token;
@@ -35,7 +34,7 @@ class Auth with ChangeNotifier {
         throw HttpException(responseData['error']['message']);
       }
       _token = responseData['token'];
-      _userId = responseData['username'];
+      _userName = responseData['username'];
 
       notifyListeners();
     } catch (error) {
@@ -52,7 +51,7 @@ class Auth with ChangeNotifier {
   }
 Future<void> logout() async{
     _token=null;
-    _userId=null;
+    _userName=null;
     notifyListeners();
 }
 }

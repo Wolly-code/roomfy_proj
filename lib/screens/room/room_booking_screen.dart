@@ -3,7 +3,9 @@ import 'package:esewa_pnp/esewa_pnp.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import '../../providers/booking.dart';
 import '../../providers/room.dart';
+import '../../providers/user.dart';
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({Key? key}) : super(key: key);
@@ -18,9 +20,10 @@ class _BookingScreenState extends State<BookingScreen> {
   var title = '';
   final _form = GlobalKey<FormState>();
   String checkIn = '';
-  var checkOut = '';
-  String? message;
+  String checkOut = '';
   Room? room;
+  User? user;
+  ESewaResult? paymentDetail;
 
   @override
   void didChangeDependencies() {
@@ -29,6 +32,8 @@ class _BookingScreenState extends State<BookingScreen> {
         final String? roomID =
             ModalRoute.of(context)!.settings.arguments as String;
         final Room roomData = Provider.of<Rooms>(context).findByID(roomID!);
+        final User? userData = Provider.of<Users>(context).userObj;
+        user = userData;
         room = roomData;
       } catch (e) {
         rethrow;
@@ -48,14 +53,57 @@ class _BookingScreenState extends State<BookingScreen> {
     ESewaPnp _eSewaPnp = ESewaPnp(configuration: _configuration);
     ESewaPayment _payment = ESewaPayment(
         amount: room!.securityDeposit.toDouble(),
-        productName: "Recharge Card",
-        productID: "RE1",
+        productName: room!.title,
+        productID: room!.id,
         callBackURL: "example.com");
+
+    Future<void> _saveForm() async {
+      final isValid = _form.currentState!.validate();
+      if (!isValid) {
+        return;
+      }
+      if (paymentDetail?.status != 'COMPLETE') {
+        const snackBar = SnackBar(
+          duration: Duration(seconds: 2),
+          content: Text('Please complete the payment before booking'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        return;
+      }
+      _form.currentState!.save();
+      try {
+        if (room!.poster == user!.userId) {
+          const snackBar = SnackBar(
+            duration: Duration(seconds: 2),
+            content: Text('You cant book your own post!'),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          return;
+        }
+        await Provider.of<Bookings>(context, listen: false).postPaymentDetails(
+            paymentDetail!.productId,
+            room!.securityDeposit.toDouble(),
+            user!.userId,
+            room!.id,
+            'Security Deposit');
+        var respMsg = await Provider.of<Bookings>(context, listen: false)
+            .postRoomBooking(checkIn, checkOut, room!.id);
+        final snackBar = SnackBar(
+          duration: const Duration(seconds: 2),
+          content: Text(respMsg),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      } catch (e) {
+        rethrow;
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
-        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.add))],
+        actions: [
+          IconButton(onPressed: _saveForm, icon: const Icon(Icons.add))
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(15),
@@ -103,13 +151,8 @@ class _BookingScreenState extends State<BookingScreen> {
                     lastDate: DateTime(2101),
                   );
                   if (pickedDate != null) {
-                    print(
-                        pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
                     String formattedDate =
                         DateFormat('yyyy-MM-dd').format(pickedDate);
-                    print(
-                        formattedDate); //formatted date output using intl package =>  2021-03-16
-                    //you can implement different kind of Date Format here according to your requirement
 
                     setState(() {
                       checkOut =
@@ -120,18 +163,30 @@ class _BookingScreenState extends State<BookingScreen> {
                   }
                 },
               ),
-              ElevatedButton(
-                  onPressed: () async {
-                    try {
-                      final _res =
-                          await _eSewaPnp.initPayment(payment: _payment);
-                      message = _res.message;
-                      print(message);
-                    } catch (error) {
-                      print('The Transaction was unsuccessful');
-                    }
-                  },
-                  child: const Text('ESEWA')),
+              const Divider(),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                    'Firstly Before booking you have to pay the security deposit the post owner has stated'),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'Security Deposit: NRS ${room!.securityDeposit}/-',
+                  style: const TextStyle(fontSize: 20),
+                ),
+              ),
+              ESewaPaymentButton(
+                _eSewaPnp,
+                amount: room!.securityDeposit.toDouble(),
+                callBackURL: "https://example.com",
+                productId: room!.id,
+                productName: room!.title,
+                onSuccess: (ESewaResult result) {
+                  paymentDetail = result;
+                },
+                onFailure: (ESewaPaymentException e) {},
+              ),
             ],
           ),
         ),

@@ -260,4 +260,5 @@ class Rooms with ChangeNotifier {
     await fetchAndSetRoom();
     notifyListeners();
   }
+
 }

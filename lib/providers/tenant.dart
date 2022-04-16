@@ -134,8 +134,6 @@ class Tenants with ChangeNotifier {
           body: json.encode({
             "status": newStatus,
           }));
-      print(response.statusCode);
-      print(response.body);
     } catch (exp) {
       rethrow;
     }
@@ -169,8 +167,6 @@ class Tenants with ChangeNotifier {
       request.files.add(multipartFile1);
       var response = await request.send();
       final respStr = await response.stream.bytesToString();
-      print(response);
-      print(respStr);
     } catch (error) {
       rethrow;
     }

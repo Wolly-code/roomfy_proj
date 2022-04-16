@@ -15,6 +15,7 @@ class PostRoomAd extends StatefulWidget {
 class _PostRoomAdState extends State<PostRoomAd> {
   final _form = GlobalKey<FormState>();
   File? _photo1Stored;
+  String? propertyType;
   File? _photo2Stored;
   var _editedRoom = Room(
       id: '',
@@ -77,8 +78,8 @@ class _PostRoomAdState extends State<PostRoomAd> {
     _form.currentState!.save();
     try {
       await Provider.of<Rooms>(context, listen: false)
-          .addRoom(_editedRoom, _photo1Stored!, _photo2Stored!);
-      Navigator.of(context).pop();
+          .addRoom(_editedRoom, _photo1Stored!, _photo2Stored!,);
+      // Navigator.of(context).pop();
     } catch (error) {
       rethrow;
     }
