@@ -118,6 +118,8 @@ class Tenants with ChangeNotifier {
     if (response.statusCode >= 400) {
       throw HttpException('Could not delete tenant');
     }
+    print(response.body);
+
     await fetchAndSetTenant();
     notifyListeners();
   }
@@ -234,5 +236,29 @@ class Tenants with ChangeNotifier {
     }
     await fetchAndSetTenant();
     notifyListeners();
+  }
+
+  Future<String> createAppointment(String id, String date) async {
+    Uri url = Uri.parse('http://10.0.2.2:8000/tenant/booking');
+    try {
+      var response = await http.post(url,
+          headers: {
+            'Authorization': 'Token $authToken',
+            'Content-Type': 'application/json'
+          },
+          body: json.encode({
+            "appointment_date": date,
+            "Tenant": id,
+          }));
+      if(response.statusCode>400){
+        return 'Appointment Created Successfully';
+      }else if (response.statusCode==400) {
+        return 'You have already created a appointment with this user';
+      }else{
+        return 'Unable to create Appointment';
+      }
+    } catch (e) {
+      rethrow;
+    }
   }
 }

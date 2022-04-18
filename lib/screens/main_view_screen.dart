@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:roomfy_proj/providers/user.dart';
-import 'package:roomfy_proj/screens/app_drawer.dart';
 import 'package:roomfy_proj/screens/post_ad.dart';
 import 'package:roomfy_proj/screens/room/room_overview_screen.dart';
 import 'package:roomfy_proj/screens/tenant/tenant_overview_screen.dart';
@@ -27,7 +26,6 @@ class _MainViewState extends State<MainView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: screens[currentIndex],
-      drawer: const AppDrawer(),
       bottomNavigationBar: BottomNavigationBar(
         iconSize: 25,
         onTap: (index) {

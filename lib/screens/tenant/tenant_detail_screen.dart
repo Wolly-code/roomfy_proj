@@ -65,6 +65,19 @@ class _TenantDetailScreenState extends State<TenantDetailScreen> {
                 softWrap: true,
               ),
             ),
+            ElevatedButton(
+                onPressed: () async {
+                  var response =
+                      await Provider.of<Tenants>(context, listen: false)
+                          .createAppointment(
+                              loadedTenant.id, DateTime.now().toString());
+                  final snackBar = SnackBar(
+                    duration: const Duration(seconds: 2),
+                    content: Text(response),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                },
+                child: const Text('Create Appointment Now'))
           ],
         ),
       ),

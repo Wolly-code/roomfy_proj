@@ -39,7 +39,9 @@ class _PostRoomAdState extends State<PostRoomAd> {
       status: true,
       photo1: '',
       photo2: '',
-      securityDeposit: 0);
+      securityDeposit: 0,
+      furnished: false,
+      minimumBookingDays: 0);
 
   Future<void> _photo1(int id) async {
     final picker = ImagePicker();
@@ -77,9 +79,12 @@ class _PostRoomAdState extends State<PostRoomAd> {
     }
     _form.currentState!.save();
     try {
-      await Provider.of<Rooms>(context, listen: false)
-          .addRoom(_editedRoom, _photo1Stored!, _photo2Stored!,);
-      // Navigator.of(context).pop();
+      await Provider.of<Rooms>(context, listen: false).addRoom(
+        _editedRoom,
+        _photo1Stored!,
+        _photo2Stored!,
+      );
+      Navigator.of(context).pop();
     } catch (error) {
       rethrow;
     }
@@ -149,6 +154,8 @@ class _PostRoomAdState extends State<PostRoomAd> {
                           photo1: '',
                           photo2: '',
                           securityDeposit: _editedRoom.securityDeposit,
+                          furnished: _editedRoom.furnished,
+                          minimumBookingDays: _editedRoom.minimumBookingDays,
                         );
                       },
                     ),
@@ -189,6 +196,8 @@ class _PostRoomAdState extends State<PostRoomAd> {
                         photo1: '',
                         photo2: '',
                         securityDeposit: _editedRoom.securityDeposit,
+                        furnished: _editedRoom.furnished,
+                        minimumBookingDays: _editedRoom.minimumBookingDays,
                       );
                     },
                   ),
@@ -235,9 +244,15 @@ class _PostRoomAdState extends State<PostRoomAd> {
                           photo1: '',
                           photo2: '',
                           securityDeposit: _editedRoom.securityDeposit,
+                          minimumBookingDays: _editedRoom.minimumBookingDays,
+                          furnished: _editedRoom.furnished,
                         );
                       },
                     ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Text('Please enter your room rent price per day: '),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10),
@@ -259,6 +274,7 @@ class _PostRoomAdState extends State<PostRoomAd> {
                           title: _editedRoom.title,
                           poster: _editedRoom.poster,
                           posterId: _editedRoom.posterId,
+                          minimumBookingDays: _editedRoom.minimumBookingDays,
                           description: _editedRoom.description,
                           created: _editedRoom.created,
                           email: _editedRoom.email,
@@ -277,6 +293,7 @@ class _PostRoomAdState extends State<PostRoomAd> {
                           photo1: '',
                           photo2: '',
                           securityDeposit: _editedRoom.securityDeposit,
+                          furnished: _editedRoom.furnished,
                         );
                       },
                     ),
@@ -284,14 +301,15 @@ class _PostRoomAdState extends State<PostRoomAd> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: TextFormField(
+                      keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
                         labelStyle: TextStyle(fontSize: 15),
-                        labelText: 'Security Deposit',
+                        labelText: 'Minimum Booking Limit:',
                         border: OutlineInputBorder(),
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return 'Please provide a valid location';
+                          return 'Please provide a minimum booking limit';
                         }
                         return null;
                       },
@@ -309,6 +327,53 @@ class _PostRoomAdState extends State<PostRoomAd> {
                           propertyType: _editedRoom.propertyType,
                           totalRooms: _editedRoom.totalRooms,
                           price: _editedRoom.price,
+                          minimumBookingDays: int.parse(value!),
+                          internet: _editedRoom.internet,
+                          parking: _editedRoom.parking,
+                          balcony: _editedRoom.balcony,
+                          yard: _editedRoom.yard,
+                          disableAccess: _editedRoom.disableAccess,
+                          garage: _editedRoom.garage,
+                          status: _editedRoom.status,
+                          photo1: '',
+                          photo2: '',
+                          securityDeposit:_editedRoom.securityDeposit,
+                          furnished: _editedRoom.furnished,
+                        );
+                      },
+                    ),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                        labelStyle: TextStyle(fontSize: 15),
+                        labelText: 'Security Deposit',
+                        hintText: 'Enter Days (Eg: 7)',
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please provide the amount for Security Deposit';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _editedRoom = Room(
+                          id: _editedRoom.id,
+                          title: _editedRoom.title,
+                          poster: _editedRoom.poster,
+                          posterId: _editedRoom.posterId,
+                          description: _editedRoom.description,
+                          created: _editedRoom.created,
+                          email: _editedRoom.email,
+                          phoneNumber: _editedRoom.phoneNumber,
+                          location: _editedRoom.location,
+                          propertyType: _editedRoom.propertyType,
+                          totalRooms: _editedRoom.totalRooms,
+                          price: _editedRoom.price,
+                          minimumBookingDays: _editedRoom.minimumBookingDays,
                           internet: _editedRoom.internet,
                           parking: _editedRoom.parking,
                           balcony: _editedRoom.balcony,
@@ -319,6 +384,7 @@ class _PostRoomAdState extends State<PostRoomAd> {
                           photo1: '',
                           photo2: '',
                           securityDeposit: int.parse(value!),
+                          furnished: _editedRoom.furnished,
                         );
                       },
                     ),
@@ -359,6 +425,8 @@ class _PostRoomAdState extends State<PostRoomAd> {
                                     description: _editedRoom.description,
                                     created: _editedRoom.created,
                                     email: _editedRoom.email,
+                                    minimumBookingDays:
+                                        _editedRoom.minimumBookingDays,
                                     phoneNumber: _editedRoom.phoneNumber,
                                     location: _editedRoom.location,
                                     propertyType: newValue.toString(),
@@ -375,6 +443,7 @@ class _PostRoomAdState extends State<PostRoomAd> {
                                     photo2: '',
                                     securityDeposit:
                                         _editedRoom.securityDeposit,
+                                    furnished: _editedRoom.furnished,
                                   );
                                 } else {
                                   _editedRoom = Room(
@@ -382,6 +451,8 @@ class _PostRoomAdState extends State<PostRoomAd> {
                                     title: _editedRoom.title,
                                     poster: _editedRoom.poster,
                                     posterId: _editedRoom.posterId,
+                                    minimumBookingDays:
+                                        _editedRoom.minimumBookingDays,
                                     description: _editedRoom.description,
                                     created: _editedRoom.created,
                                     email: _editedRoom.email,
@@ -401,6 +472,7 @@ class _PostRoomAdState extends State<PostRoomAd> {
                                     photo2: '',
                                     securityDeposit:
                                         _editedRoom.securityDeposit,
+                                    furnished: _editedRoom.furnished,
                                   );
                                 }
                               }),
@@ -435,6 +507,7 @@ class _PostRoomAdState extends State<PostRoomAd> {
                           location: _editedRoom.location,
                           propertyType: _editedRoom.propertyType,
                           totalRooms: int.parse(value!),
+                          minimumBookingDays: _editedRoom.minimumBookingDays,
                           price: _editedRoom.price,
                           internet: _editedRoom.internet,
                           parking: _editedRoom.parking,
@@ -446,6 +519,7 @@ class _PostRoomAdState extends State<PostRoomAd> {
                           photo1: '',
                           photo2: '',
                           securityDeposit: _editedRoom.securityDeposit,
+                          furnished: _editedRoom.furnished,
                         );
                       },
                     ),
@@ -479,6 +553,7 @@ class _PostRoomAdState extends State<PostRoomAd> {
                           posterId: _editedRoom.posterId,
                           description: _editedRoom.description,
                           created: _editedRoom.created,
+                          minimumBookingDays: _editedRoom.minimumBookingDays,
                           email: _editedRoom.email,
                           phoneNumber: _editedRoom.phoneNumber,
                           location: _editedRoom.location,
@@ -495,6 +570,7 @@ class _PostRoomAdState extends State<PostRoomAd> {
                           photo1: '',
                           photo2: '',
                           securityDeposit: _editedRoom.securityDeposit,
+                          furnished: _editedRoom.furnished,
                         );
                       });
                     },
@@ -518,6 +594,7 @@ class _PostRoomAdState extends State<PostRoomAd> {
                           poster: _editedRoom.poster,
                           posterId: _editedRoom.posterId,
                           description: _editedRoom.description,
+                          minimumBookingDays: _editedRoom.minimumBookingDays,
                           created: _editedRoom.created,
                           email: _editedRoom.email,
                           phoneNumber: _editedRoom.phoneNumber,
@@ -535,6 +612,7 @@ class _PostRoomAdState extends State<PostRoomAd> {
                           photo1: '',
                           photo2: '',
                           securityDeposit: _editedRoom.securityDeposit,
+                          furnished: _editedRoom.furnished,
                         );
                       });
                     },
@@ -562,6 +640,7 @@ class _PostRoomAdState extends State<PostRoomAd> {
                           email: _editedRoom.email,
                           phoneNumber: _editedRoom.phoneNumber,
                           location: _editedRoom.location,
+                          minimumBookingDays: _editedRoom.minimumBookingDays,
                           propertyType: _editedRoom.propertyType,
                           totalRooms: _editedRoom.totalRooms,
                           price: _editedRoom.price,
@@ -575,6 +654,7 @@ class _PostRoomAdState extends State<PostRoomAd> {
                           photo1: '',
                           photo2: '',
                           securityDeposit: _editedRoom.securityDeposit,
+                          furnished: _editedRoom.furnished,
                         );
                       });
                     },
@@ -603,6 +683,7 @@ class _PostRoomAdState extends State<PostRoomAd> {
                           phoneNumber: _editedRoom.phoneNumber,
                           location: _editedRoom.location,
                           propertyType: _editedRoom.propertyType,
+                          minimumBookingDays: _editedRoom.minimumBookingDays,
                           totalRooms: _editedRoom.totalRooms,
                           price: _editedRoom.price,
                           internet: _editedRoom.internet,
@@ -615,6 +696,7 @@ class _PostRoomAdState extends State<PostRoomAd> {
                           photo1: '',
                           photo2: '',
                           securityDeposit: _editedRoom.securityDeposit,
+                          furnished: _editedRoom.furnished,
                         );
                       });
                     },
@@ -634,6 +716,7 @@ class _PostRoomAdState extends State<PostRoomAd> {
                       setState(() {
                         _editedRoom = Room(
                           id: _editedRoom.id,
+                          minimumBookingDays: _editedRoom.minimumBookingDays,
                           title: _editedRoom.title,
                           poster: _editedRoom.poster,
                           posterId: _editedRoom.posterId,
@@ -655,6 +738,49 @@ class _PostRoomAdState extends State<PostRoomAd> {
                           photo1: '',
                           photo2: '',
                           securityDeposit: _editedRoom.securityDeposit,
+                          furnished: _editedRoom.furnished,
+                        );
+                      });
+                    },
+                  ),
+                  CheckboxListTile(
+                    title: Row(
+                      children: const [
+                        Icon(Icons.bed_rounded),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Text('Furnished'),
+                      ],
+                    ),
+                    value: _editedRoom.furnished,
+                    onChanged: (value) {
+                      setState(() {
+                        _editedRoom = Room(
+                          id: _editedRoom.id,
+                          title: _editedRoom.title,
+                          poster: _editedRoom.poster,
+                          posterId: _editedRoom.posterId,
+                          description: _editedRoom.description,
+                          created: _editedRoom.created,
+                          email: _editedRoom.email,
+                          minimumBookingDays: _editedRoom.minimumBookingDays,
+                          phoneNumber: _editedRoom.phoneNumber,
+                          location: _editedRoom.location,
+                          propertyType: _editedRoom.propertyType,
+                          totalRooms: _editedRoom.totalRooms,
+                          price: _editedRoom.price,
+                          internet: _editedRoom.internet,
+                          parking: _editedRoom.parking,
+                          balcony: _editedRoom.balcony,
+                          yard: _editedRoom.yard,
+                          disableAccess: _editedRoom.disableAccess,
+                          garage: _editedRoom.garage,
+                          status: _editedRoom.status,
+                          photo1: '',
+                          photo2: '',
+                          securityDeposit: _editedRoom.securityDeposit,
+                          furnished: value is bool ? value : false,
                         );
                       });
                     },
@@ -687,6 +813,7 @@ class _PostRoomAdState extends State<PostRoomAd> {
                           price: _editedRoom.price,
                           internet: _editedRoom.internet,
                           parking: _editedRoom.parking,
+                          minimumBookingDays: _editedRoom.minimumBookingDays,
                           balcony: _editedRoom.balcony,
                           yard: _editedRoom.yard,
                           disableAccess: _editedRoom.disableAccess,
@@ -695,6 +822,7 @@ class _PostRoomAdState extends State<PostRoomAd> {
                           photo1: '',
                           photo2: '',
                           securityDeposit: _editedRoom.securityDeposit,
+                          furnished: _editedRoom.furnished,
                         );
                       });
                     },
@@ -734,6 +862,7 @@ class _PostRoomAdState extends State<PostRoomAd> {
                           price: _editedRoom.price,
                           internet: _editedRoom.internet,
                           parking: _editedRoom.parking,
+                          minimumBookingDays: _editedRoom.minimumBookingDays,
                           balcony: _editedRoom.balcony,
                           yard: _editedRoom.yard,
                           disableAccess: _editedRoom.disableAccess,
@@ -742,6 +871,7 @@ class _PostRoomAdState extends State<PostRoomAd> {
                           photo1: '',
                           photo2: '',
                           securityDeposit: _editedRoom.securityDeposit,
+                          furnished: _editedRoom.furnished,
                         );
                       },
                     ),
@@ -772,6 +902,7 @@ class _PostRoomAdState extends State<PostRoomAd> {
                           posterId: _editedRoom.posterId,
                           description: value.toString(),
                           created: _editedRoom.created,
+                          minimumBookingDays: _editedRoom.minimumBookingDays,
                           email: _editedRoom.email,
                           phoneNumber: _editedRoom.phoneNumber,
                           location: _editedRoom.location,
@@ -788,6 +919,7 @@ class _PostRoomAdState extends State<PostRoomAd> {
                           photo1: '',
                           photo2: '',
                           securityDeposit: _editedRoom.securityDeposit,
+                          furnished: _editedRoom.furnished,
                         );
                       },
                     ),

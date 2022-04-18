@@ -46,6 +46,10 @@ class Users with ChangeNotifier {
     return [..._user];
   }
 
+  User findByID(String id) {
+    return _user.firstWhere((element) => element.userId == id);
+  }
+
   Future<void> fetchAndSetUser() async {
     Uri url = Uri.parse('http://10.0.2.2:8000/api/profile');
     try {
@@ -103,7 +107,7 @@ class Users with ChangeNotifier {
     }
   }
 
-  Future<void> addUser(User user, File photo,String gender) async {
+  Future<void> addUser(User user, File photo, String gender) async {
     Uri url = Uri.parse('http://10.0.2.2:8000/api/profile');
     try {
       var stream = http.ByteStream(DelegatingStream.typed(photo.openRead()));
@@ -175,9 +179,5 @@ class Users with ChangeNotifier {
       print(response.statusCode);
       print(response.body);
     } catch (e) {}
-  }
-
-  User findByID(String id) {
-    return _user.firstWhere((user) => user.userId == id);
   }
 }

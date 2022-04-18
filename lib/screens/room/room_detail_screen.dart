@@ -2,7 +2,10 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:roomfy_proj/providers/room.dart';
+import 'package:roomfy_proj/providers/user.dart';
 import 'package:roomfy_proj/screens/room/room_booking_screen.dart';
+
+import '../user/user_profile.dart';
 
 class RoomDetailScreen extends StatefulWidget {
   const RoomDetailScreen({Key? key}) : super(key: key);
@@ -15,9 +18,12 @@ class RoomDetailScreen extends StatefulWidget {
 class _RoomDetailScreenState extends State<RoomDetailScreen> {
   @override
   Widget build(BuildContext context) {
+    bool _customTileExpanded = false;
     final roomId = ModalRoute.of(context)!.settings.arguments as String;
     final loadedRoom =
         Provider.of<Rooms>(context, listen: false).findByID(roomId);
+    final userData =
+        Provider.of<Users>(context, listen: false).findByID(loadedRoom.poster);
     final ButtonStyle raisedButtonStyle = ElevatedButton.styleFrom(
       onPrimary: Colors.black87,
       primary: Colors.grey[300],
@@ -81,31 +87,36 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 18.0),
-                    child: Row(
-                      children: [
-                        const CircleAvatar(
-                          child: Text('SK'),
+                    padding: const EdgeInsets.all(8.0),
+                    child: Card(
+                      child: ExpansionTile(
+                        leading: CircleAvatar(
+                          backgroundImage:
+                              NetworkImage(userData.profile, scale: 10),
                         ),
-                        const SizedBox(
-                          width: 15,
+                        title:
+                            Text(userData.firstName + " " + userData.lastName),
+                        subtitle: Text(userData.userId),
+                        trailing: Icon(
+                          _customTileExpanded
+                              ? Icons.arrow_drop_down_circle
+                              : Icons.arrow_drop_down,
                         ),
-                        Column(
-                          children: const [
-                            Text(
-                              'Suhant KC',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w800, fontSize: 16),
-                            ),
-                            Text(
-                              '9860137229',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                        children: <Widget>[
+                          ElevatedButton(
+                            style: raisedButtonStyle,
+                            onPressed: () {
+                              Navigator.of(context).pushNamed(
+                                  UserProfile.routeName,
+                                  arguments: userData.userId);
+                            },
+                            child: const Text('View User'),
+                          )
+                        ],
+                        onExpansionChanged: (bool expanded) {
+                          setState(() => _customTileExpanded = expanded);
+                        },
+                      ),
                     ),
                   ),
                   Text(
@@ -152,11 +163,14 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
                         Padding(
                           padding: const EdgeInsets.only(left: 20.0),
                           child: Column(
-                            children: const [
-                              Text('Minimum Stay'),
+                            children: [
+                              const Text('Minimum Stay'),
                               Padding(
-                                padding: EdgeInsets.symmetric(vertical: 8.0),
-                                child: Text('1' + 'Week'),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
+                                child: Text(
+                                    loadedRoom.minimumBookingDays.toString() +
+                                        ' Days'),
                               ),
                             ],
                           ),
@@ -231,8 +245,8 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
                     ),
                   ),
                   SizedBox(
-                    width: MediaQuery.of(context).size.width*0.5,
-                    height: MediaQuery.of(context).size.height*0.09,
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    height: MediaQuery.of(context).size.height * 0.09,
                     child: ListTile(
                       leading: loadedRoom.propertyType == "Apartment"
                           ? const Icon(Icons.apartment)

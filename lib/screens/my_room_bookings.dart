@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:roomfy_proj/screens/room/user_room_booked_screen.dart';
 import 'package:roomfy_proj/screens/room/user_room_booking_screen.dart';
 
 class MyRoomBookings extends StatefulWidget {
@@ -20,12 +21,12 @@ class _MyRoomBookingsState extends State<MyRoomBookings> {
               title: const Text('My Ads'),
               bottom: const TabBar(tabs: [
                 Tab(
-                  text: 'Room Booking',
+                  text: 'Your Booking',
                 ),
-                Tab(text: 'Tenant'),
+                Tab(text: 'Your Room Booking'),
               ])),
           body: const TabBarView(
-            children: [UserRoomBookingScreen(), UserRoomBookingScreen()],
+            children: [UserRoomBookingScreen(), UserRoomBookedScreen()],
           ),
         ),
       ),

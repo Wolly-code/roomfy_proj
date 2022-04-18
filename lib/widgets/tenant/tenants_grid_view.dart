@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../error/no_result_found.dart';
 import '../../providers/tenant.dart';
 import 'tenant_item.dart';
 
@@ -11,9 +12,7 @@ class TenantGrid extends StatelessWidget {
     final tenantData = Provider.of<Tenants>(context);
     final tenant = tenantData.displayTenants;
     return tenant.isEmpty
-        ? const Center(
-          child: Text('NO TENANT DATA AVAILABLE'),
-        )
+        ? NoResultFoundScreen()
         : GridView.builder(
             padding: const EdgeInsets.all(10),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

@@ -16,12 +16,14 @@ class Room with ChangeNotifier {
   final String email;
   final String phoneNumber;
   final String location;
-   final String propertyType;
+  final String propertyType;
   final int totalRooms;
   final int price;
+  final int minimumBookingDays;
   final int securityDeposit;
   final bool internet;
   final bool parking;
+  final bool furnished;
   final bool balcony;
   final bool yard;
   final bool disableAccess;
@@ -43,9 +45,11 @@ class Room with ChangeNotifier {
     required this.propertyType,
     required this.totalRooms,
     required this.price,
+    required this.minimumBookingDays,
     required this.securityDeposit,
     required this.internet,
     required this.parking,
+    required this.furnished,
     required this.balcony,
     required this.yard,
     required this.disableAccess,
@@ -109,6 +113,8 @@ class Rooms with ChangeNotifier {
           photo1: currentElement['photo1'],
           photo2: currentElement['photo2'],
           securityDeposit: currentElement['security_deposit'],
+          furnished: currentElement['furnished'],
+          minimumBookingDays: currentElement['minimum_booking'],
         ));
       }
       _displayRooms =
@@ -147,6 +153,8 @@ class Rooms with ChangeNotifier {
       request.fields["Disabled_Access"] = room.disableAccess.toString();
       request.fields["Garage"] = room.garage.toString();
       request.fields["status"] = room.status.toString();
+      request.fields['furnished'] = room.furnished.toString();
+      request.fields['minimum_booking'] = room.minimumBookingDays.toString();
       request.fields["security_deposit"] = room.securityDeposit.toString();
       var multipartFile1 = http.MultipartFile('photo1', stream1, length1,
           filename: basename(photo1.path));
@@ -214,7 +222,9 @@ class Rooms with ChangeNotifier {
               'price': room.price,
               'internet': room.internet,
               'parking': room.parking,
+              'furnished': room.furnished,
               'Balcony': room.balcony,
+              'minimum_booking': room.minimumBookingDays,
               'security_deposit': room.securityDeposit,
               'Yard': room.yard,
               'Disabled_Access': room.disableAccess,
@@ -260,5 +270,4 @@ class Rooms with ChangeNotifier {
     await fetchAndSetRoom();
     notifyListeners();
   }
-
 }

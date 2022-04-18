@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:roomfy_proj/widgets/room/room_item.dart';
+import '../../error/no_result_found.dart';
 import '../../providers/room.dart';
 import 'package:provider/provider.dart';
 
@@ -11,9 +12,7 @@ class RoomsGrid extends StatelessWidget {
     final roomData = Provider.of<Rooms>(context);
     final rooms = roomData.displayRooms;
     return rooms.isEmpty
-        ? const Center(
-            child: Text("NO ROOM DATA FOUND"),
-          )
+        ? NoResultFoundScreen()
         : GridView.builder(
             padding: const EdgeInsets.all(10),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

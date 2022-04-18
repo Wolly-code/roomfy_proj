@@ -73,8 +73,8 @@ class _ViewUserProfileState extends State<ViewUserProfile> {
             ],
           ),
         ),
-        _settingsCard(widget.user.userId, widget.user.bio, widget.user.gender,
-            widget.user.location),
+        _settingsCard(widget.user.userId, widget.user.bio, widget.user.location,
+            widget.user.gender),
       ],
     );
   }

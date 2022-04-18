@@ -39,7 +39,9 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
       status: true,
       photo1: '',
       photo2: '',
-      securityDeposit: 0);
+      securityDeposit: 0,
+      furnished: false,
+      minimumBookingDays: 0);
 
   @override
   void didChangeDependencies() {
@@ -172,6 +174,7 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                             poster: _editedRoom.poster,
                             posterId: _editedRoom.posterId,
                             description: _editedRoom.description,
+                            minimumBookingDays: _editedRoom.minimumBookingDays,
                             created: _editedRoom.created,
                             email: _editedRoom.email,
                             phoneNumber: value.toString(),
@@ -189,6 +192,7 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                             photo1: '',
                             photo2: '',
                             securityDeposit: _editedRoom.securityDeposit,
+                            furnished: _editedRoom.furnished,
                           );
                         },
                       ),
@@ -214,6 +218,7 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                           poster: _editedRoom.poster,
                           posterId: _editedRoom.posterId,
                           description: _editedRoom.description,
+                          minimumBookingDays: _editedRoom.minimumBookingDays,
                           created: _editedRoom.created,
                           email: value.toString(),
                           phoneNumber: _editedRoom.phoneNumber,
@@ -231,6 +236,7 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                           photo1: '',
                           photo2: '',
                           securityDeposit: _editedRoom.securityDeposit,
+                          furnished: _editedRoom.furnished,
                         );
                       },
                     ),
@@ -261,6 +267,7 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                             poster: _editedRoom.poster,
                             posterId: _editedRoom.posterId,
                             description: _editedRoom.description,
+                            minimumBookingDays: _editedRoom.minimumBookingDays,
                             created: _editedRoom.created,
                             email: _editedRoom.email,
                             phoneNumber: _editedRoom.phoneNumber,
@@ -278,6 +285,7 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                             photo1: '',
                             photo2: '',
                             securityDeposit: _editedRoom.securityDeposit,
+                            furnished: _editedRoom.furnished,
                           );
                         },
                       ),
@@ -307,6 +315,7 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                             created: _editedRoom.created,
                             email: _editedRoom.email,
                             phoneNumber: _editedRoom.phoneNumber,
+                            minimumBookingDays: _editedRoom.minimumBookingDays,
                             location: _editedRoom.location,
                             propertyType: _editedRoom.propertyType,
                             totalRooms: _editedRoom.totalRooms,
@@ -321,6 +330,143 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                             photo1: '',
                             photo2: '',
                             securityDeposit: _editedRoom.securityDeposit,
+                            furnished: _editedRoom.furnished,
+                          );
+                        },
+                      ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(bottom: 8.0),
+                      child: Text(
+                        'Minimum Booking Days:',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black38),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Center(
+                        child: DropdownButtonHideUnderline(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                            ),
+                            child: DropdownButton(
+                                value: selectedValue,
+                                items: dropdownItems,
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    selectedValue = newValue!;
+                                  });
+                                  if (newValue != null) {
+                                    _editedRoom = Room(
+                                      id: _editedRoom.id,
+                                      title: _editedRoom.title,
+                                      poster: _editedRoom.poster,
+                                      posterId: _editedRoom.posterId,
+                                      description: _editedRoom.description,
+                                      created: _editedRoom.created,
+                                      email: _editedRoom.email,
+                                      minimumBookingDays: int.parse(newValue),
+                                      phoneNumber: _editedRoom.phoneNumber,
+                                      location: _editedRoom.location,
+                                      propertyType: _editedRoom.propertyType,
+                                      totalRooms: _editedRoom.totalRooms,
+                                      price: _editedRoom.price,
+                                      internet: _editedRoom.internet,
+                                      parking: _editedRoom.parking,
+                                      balcony: _editedRoom.balcony,
+                                      yard: _editedRoom.yard,
+                                      disableAccess: _editedRoom.disableAccess,
+                                      garage: _editedRoom.garage,
+                                      status: _editedRoom.status,
+                                      photo1: '',
+                                      photo2: '',
+                                      securityDeposit:
+                                          _editedRoom.securityDeposit,
+                                      furnished: _editedRoom.furnished,
+                                    );
+                                  } else {
+                                    _editedRoom = Room(
+                                      id: _editedRoom.id,
+                                      title: _editedRoom.title,
+                                      poster: _editedRoom.poster,
+                                      posterId: _editedRoom.posterId,
+                                      minimumBookingDays:
+                                          _editedRoom.minimumBookingDays,
+                                      description: _editedRoom.description,
+                                      created: _editedRoom.created,
+                                      email: _editedRoom.email,
+                                      phoneNumber: _editedRoom.phoneNumber,
+                                      location: _editedRoom.location,
+                                      propertyType: 'Apartment',
+                                      totalRooms: _editedRoom.totalRooms,
+                                      price: _editedRoom.price,
+                                      internet: _editedRoom.internet,
+                                      parking: _editedRoom.parking,
+                                      balcony: _editedRoom.balcony,
+                                      yard: _editedRoom.yard,
+                                      disableAccess: _editedRoom.disableAccess,
+                                      garage: _editedRoom.garage,
+                                      status: _editedRoom.status,
+                                      photo1: '',
+                                      photo2: '',
+                                      securityDeposit:
+                                          _editedRoom.securityDeposit,
+                                      furnished: _editedRoom.furnished,
+                                    );
+                                  }
+                                }),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: TextFormField(
+                        initialValue: _editedRoom.minimumBookingDays.toString(),
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                          labelStyle: TextStyle(fontSize: 15),
+                          labelText: 'Minimum Booking Limit:',
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please provide a minimum booking limit';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _editedRoom = Room(
+                            id: _editedRoom.id,
+                            title: _editedRoom.title,
+                            poster: _editedRoom.poster,
+                            posterId: _editedRoom.posterId,
+                            description: _editedRoom.description,
+                            created: _editedRoom.created,
+                            email: _editedRoom.email,
+                            phoneNumber: _editedRoom.phoneNumber,
+                            location: _editedRoom.location,
+                            propertyType: _editedRoom.propertyType,
+                            totalRooms: _editedRoom.totalRooms,
+                            price: _editedRoom.price,
+                            minimumBookingDays: int.parse(value!),
+                            internet: _editedRoom.internet,
+                            parking: _editedRoom.parking,
+                            balcony: _editedRoom.balcony,
+                            yard: _editedRoom.yard,
+                            disableAccess: _editedRoom.disableAccess,
+                            garage: _editedRoom.garage,
+                            status: _editedRoom.status,
+                            photo1: '',
+                            photo2: '',
+                            securityDeposit: _editedRoom.securityDeposit,
+                            furnished: _editedRoom.furnished,
                           );
                         },
                       ),
@@ -352,6 +498,7 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                             phoneNumber: _editedRoom.phoneNumber,
                             location: _editedRoom.location,
                             propertyType: _editedRoom.propertyType,
+                            minimumBookingDays: _editedRoom.minimumBookingDays,
                             totalRooms: _editedRoom.totalRooms,
                             price: _editedRoom.price,
                             internet: _editedRoom.internet,
@@ -361,6 +508,7 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                             disableAccess: _editedRoom.disableAccess,
                             garage: _editedRoom.garage,
                             status: _editedRoom.status,
+                            furnished: _editedRoom.furnished,
                             photo1: '',
                             photo2: '',
                             securityDeposit: int.parse(value!),
@@ -400,6 +548,8 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                                     title: _editedRoom.title,
                                     poster: _editedRoom.poster,
                                     posterId: _editedRoom.posterId,
+                                    minimumBookingDays:
+                                        _editedRoom.minimumBookingDays,
                                     description: _editedRoom.description,
                                     created: _editedRoom.created,
                                     email: _editedRoom.email,
@@ -409,6 +559,7 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                                     totalRooms: _editedRoom.totalRooms,
                                     price: _editedRoom.price,
                                     internet: _editedRoom.internet,
+                                    furnished: _editedRoom.furnished,
                                     parking: _editedRoom.parking,
                                     balcony: _editedRoom.balcony,
                                     yard: _editedRoom.yard,
@@ -460,10 +611,12 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                             yard: _editedRoom.yard,
                             disableAccess: _editedRoom.disableAccess,
                             garage: _editedRoom.garage,
+                            furnished: _editedRoom.furnished,
                             status: _editedRoom.status,
                             photo1: '',
                             photo2: '',
                             securityDeposit: _editedRoom.securityDeposit,
+                            minimumBookingDays: _editedRoom.minimumBookingDays,
                           );
                         },
                       ),
@@ -494,8 +647,10 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                             id: _editedRoom.id,
                             title: _editedRoom.title,
                             poster: _editedRoom.poster,
+                            minimumBookingDays: _editedRoom.minimumBookingDays,
                             posterId: _editedRoom.posterId,
                             description: _editedRoom.description,
+                            furnished: _editedRoom.furnished,
                             created: _editedRoom.created,
                             email: _editedRoom.email,
                             phoneNumber: _editedRoom.phoneNumber,
@@ -531,12 +686,14 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                       onChanged: (value) {
                         setState(() {
                           _editedRoom = Room(
+                            minimumBookingDays: _editedRoom.minimumBookingDays,
                             id: _editedRoom.id,
                             title: _editedRoom.title,
                             poster: _editedRoom.poster,
                             posterId: _editedRoom.posterId,
                             description: _editedRoom.description,
                             created: _editedRoom.created,
+                            furnished: _editedRoom.furnished,
                             email: _editedRoom.email,
                             phoneNumber: _editedRoom.phoneNumber,
                             location: _editedRoom.location,
@@ -572,6 +729,7 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                         setState(() {
                           _editedRoom = Room(
                             id: _editedRoom.id,
+                            minimumBookingDays: _editedRoom.minimumBookingDays,
                             title: _editedRoom.title,
                             poster: _editedRoom.poster,
                             posterId: _editedRoom.posterId,
@@ -585,6 +743,7 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                             price: _editedRoom.price,
                             internet: _editedRoom.internet,
                             parking: _editedRoom.parking,
+                            furnished: _editedRoom.furnished,
                             balcony: value is bool ? value : false,
                             yard: _editedRoom.yard,
                             disableAccess: _editedRoom.disableAccess,
@@ -613,6 +772,7 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                           _editedRoom = Room(
                             id: _editedRoom.id,
                             title: _editedRoom.title,
+                            minimumBookingDays: _editedRoom.minimumBookingDays,
                             poster: _editedRoom.poster,
                             posterId: _editedRoom.posterId,
                             description: _editedRoom.description,
@@ -630,6 +790,7 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                             disableAccess: _editedRoom.disableAccess,
                             garage: _editedRoom.garage,
                             status: _editedRoom.status,
+                            furnished: _editedRoom.furnished,
                             photo1: '',
                             photo2: '',
                             securityDeposit: _editedRoom.securityDeposit,
@@ -660,7 +821,9 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                             email: _editedRoom.email,
                             phoneNumber: _editedRoom.phoneNumber,
                             location: _editedRoom.location,
+                            minimumBookingDays: _editedRoom.minimumBookingDays,
                             propertyType: _editedRoom.propertyType,
+                            furnished: _editedRoom.furnished,
                             totalRooms: _editedRoom.totalRooms,
                             price: _editedRoom.price,
                             internet: _editedRoom.internet,
@@ -673,6 +836,48 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                             photo1: '',
                             photo2: '',
                             securityDeposit: _editedRoom.securityDeposit,
+                          );
+                        });
+                      },
+                    ),
+                    CheckboxListTile(
+                      title: Row(
+                        children: const [
+                          Icon(Icons.bed_rounded),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Text('Furnished'),
+                        ],
+                      ),
+                      value: _editedRoom.furnished,
+                      onChanged: (value) {
+                        setState(() {
+                          _editedRoom = Room(
+                            id: _editedRoom.id,
+                            title: _editedRoom.title,
+                            poster: _editedRoom.poster,
+                            posterId: _editedRoom.posterId,
+                            description: _editedRoom.description,
+                            created: _editedRoom.created,
+                            email: _editedRoom.email,
+                            phoneNumber: _editedRoom.phoneNumber,
+                            location: _editedRoom.location,
+                            propertyType: _editedRoom.propertyType,
+                            totalRooms: _editedRoom.totalRooms,
+                            price: _editedRoom.price,
+                            internet: _editedRoom.internet,
+                            parking: _editedRoom.parking,
+                            balcony: _editedRoom.balcony,
+                            yard: _editedRoom.yard,
+                            disableAccess: _editedRoom.disableAccess,
+                            garage: _editedRoom.furnished,
+                            status: _editedRoom.status,
+                            photo1: '',
+                            photo2: '',
+                            securityDeposit: _editedRoom.securityDeposit,
+                            furnished: value is bool ? value : false,
+                            minimumBookingDays: _editedRoom.minimumBookingDays,
                           );
                         });
                       },
@@ -693,6 +898,7 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                           _editedRoom = Room(
                             id: _editedRoom.id,
                             title: _editedRoom.title,
+                            furnished: _editedRoom.furnished,
                             poster: _editedRoom.poster,
                             posterId: _editedRoom.posterId,
                             description: _editedRoom.description,
@@ -707,6 +913,7 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                             parking: _editedRoom.parking,
                             balcony: _editedRoom.balcony,
                             yard: _editedRoom.yard,
+                            minimumBookingDays: _editedRoom.minimumBookingDays,
                             disableAccess: _editedRoom.disableAccess,
                             garage: value is bool ? value : false,
                             status: _editedRoom.status,
@@ -741,6 +948,7 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                           _editedRoom = Room(
                             id: _editedRoom.id,
                             title: value.toString(),
+                            minimumBookingDays: _editedRoom.minimumBookingDays,
                             poster: _editedRoom.poster,
                             posterId: _editedRoom.posterId,
                             description: _editedRoom.description,
@@ -754,6 +962,7 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                             internet: _editedRoom.internet,
                             parking: _editedRoom.parking,
                             balcony: _editedRoom.balcony,
+                            furnished: _editedRoom.furnished,
                             yard: _editedRoom.yard,
                             disableAccess: _editedRoom.disableAccess,
                             garage: _editedRoom.garage,
@@ -793,6 +1002,7 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                             description: value.toString(),
                             created: _editedRoom.created,
                             email: _editedRoom.email,
+                            minimumBookingDays: _editedRoom.minimumBookingDays,
                             phoneNumber: _editedRoom.phoneNumber,
                             location: _editedRoom.location,
                             propertyType: _editedRoom.propertyType,
@@ -808,6 +1018,7 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                             photo1: '',
                             photo2: '',
                             securityDeposit: _editedRoom.securityDeposit,
+                            furnished: _editedRoom.furnished,
                           );
                         },
                       ),

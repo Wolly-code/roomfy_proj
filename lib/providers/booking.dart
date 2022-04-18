@@ -9,6 +9,7 @@ class Booking with ChangeNotifier {
   String checkIn;
   String checkOut;
   String roomOwner;
+  int duration;
 
   Booking(
       {required this.id,
@@ -16,6 +17,7 @@ class Booking with ChangeNotifier {
       required this.room,
       required this.checkIn,
       required this.checkOut,
+      required this.duration,
       required this.roomOwner});
 }
 
@@ -40,13 +42,23 @@ class Payment with ChangeNotifier {
 
 class Bookings with ChangeNotifier {
   List<Booking> _bookings = [];
+  List<Booking> _yourBooked = [];
+  List<Booking> _ownBookings = [];
   final String authToken;
   final String userId;
 
   Bookings(this.authToken, this.userId, this._bookings);
 
+  List<Booking> get ownBooking {
+    return [..._ownBookings];
+  }
+
   List<Booking> get getBooking {
     return [..._bookings];
+  }
+
+  List<Booking> get yourBooked {
+    return [..._yourBooked];
   }
 
   Future<void> fetchBookingData() async {
@@ -64,17 +76,23 @@ class Bookings with ChangeNotifier {
             room: currentElement['room'].toString(),
             checkIn: currentElement['check_in'],
             checkOut: currentElement['check_out'],
-            roomOwner: currentElement['room_owner']));
-        _bookings = loadedBooking.reversed.toList();
-        notifyListeners();
+            roomOwner: currentElement['room_owner'],
+            duration: currentElement['duration']));
       }
+      _bookings = loadedBooking.reversed.toList();
+      _ownBookings =
+          loadedBooking.where((element) => element.user == userId).toList();
+      _yourBooked = loadedBooking
+          .where((element) => element.roomOwner == userId)
+          .toList();
+      notifyListeners();
     } catch (error) {
       rethrow;
     }
   }
 
   Future<String> postRoomBooking(
-      String checkIn, String checkOut, String roomId) async {
+      String checkIn, String checkOut, String roomId, int duration) async {
     Uri url = Uri.parse('http://10.0.2.2:8000/rooms/booking');
     try {
       var response = await http.post(url,
@@ -86,14 +104,16 @@ class Bookings with ChangeNotifier {
             "room": roomId,
             "check_in": checkIn,
             "check_out": checkOut,
+            'duration': duration,
           }));
+      print(response.body);
+      print(response.statusCode);
       // String message = json.decode();
       if (response.statusCode >= 400) {
         return response.body;
       }
-      return 'Booking was successfull';
-      print(response.body);
-      print(response.statusCode);
+      return 'Booking was successful';
+
     } catch (e) {
       rethrow;
     }
@@ -125,5 +145,9 @@ class Bookings with ChangeNotifier {
             "remarks": remark,
           }));
     } catch (e) {}
+  }
+
+  Booking findByID(String id) {
+    return _bookings.firstWhere((element) => element.id == id);
   }
 }

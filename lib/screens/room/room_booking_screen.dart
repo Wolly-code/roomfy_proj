@@ -21,9 +21,12 @@ class _BookingScreenState extends State<BookingScreen> {
   final _form = GlobalKey<FormState>();
   String checkIn = '';
   String checkOut = '';
+  DateTime? checkInDate;
+  DateTime? checkOutDate;
   Room? room;
   User? user;
   ESewaResult? paymentDetail;
+  int? duration;
 
   @override
   void didChangeDependencies() {
@@ -62,6 +65,16 @@ class _BookingScreenState extends State<BookingScreen> {
       if (!isValid) {
         return;
       }
+      if (duration! < room!.minimumBookingDays) {
+        String respMsg =
+            'The minimum stay for this room is at least ${room!.minimumBookingDays} Days';
+        final snackBar = SnackBar(
+          duration: const Duration(seconds: 2),
+          content: Text(respMsg),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        return;
+      }
       if (paymentDetail?.status != 'COMPLETE') {
         const snackBar = SnackBar(
           duration: Duration(seconds: 2),
@@ -72,22 +85,17 @@ class _BookingScreenState extends State<BookingScreen> {
       }
       _form.currentState!.save();
       try {
-        if (room!.poster == user!.userId) {
-          const snackBar = SnackBar(
-            duration: Duration(seconds: 2),
-            content: Text('You cant book your own post!'),
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          return;
-        }
-        await Provider.of<Bookings>(context, listen: false).postPaymentDetails(
-            paymentDetail!.productId,
-            room!.securityDeposit.toDouble(),
-            user!.userId,
-            room!.id,
-            'Security Deposit');
+        // if (room!.poster == user!.userId) {
+        //   const snackBar = SnackBar(
+        //     duration: Duration(seconds: 2),
+        //     content: Text('You cant book your own post!'),
+        //   );
+        //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        //   return;
+        // }
+
         var respMsg = await Provider.of<Bookings>(context, listen: false)
-            .postRoomBooking(checkIn, checkOut, room!.id);
+            .postRoomBooking(checkIn, checkOut, room!.id, duration!);
         final snackBar = SnackBar(
           duration: const Duration(seconds: 2),
           content: Text(respMsg),
@@ -130,8 +138,9 @@ class _BookingScreenState extends State<BookingScreen> {
                         DateFormat('yyyy-MM-dd').format(pickedDate);
 
                     setState(() {
-                      checkIn =
-                          formattedDate; //set output date to TextField value.
+                      checkIn = formattedDate;
+                      checkInDate =
+                          pickedDate; //set output date to TextField value.
                     });
                   } else {}
                 },
@@ -155,9 +164,23 @@ class _BookingScreenState extends State<BookingScreen> {
                         DateFormat('yyyy-MM-dd').format(pickedDate);
 
                     setState(() {
-                      checkOut =
-                          formattedDate; //set output date to TextField value.
+                      checkOut = formattedDate;
+                      checkOutDate = pickedDate;
                     });
+                    final firstDate = checkInDate;
+                    final secondDate = checkOutDate;
+                    final difference =
+                        secondDate?.difference(firstDate!).inDays;
+                    if (difference! <= room!.minimumBookingDays) {
+                      String respMsg =
+                          'The minimum stay for this room is at least ${room!.minimumBookingDays} Days';
+                      final snackBar = SnackBar(
+                        duration: const Duration(seconds: 2),
+                        content: Text(respMsg),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    }
+                    duration = difference;
                   } else {
                     print("Date is not selected");
                   }
@@ -178,12 +201,21 @@ class _BookingScreenState extends State<BookingScreen> {
               ),
               ESewaPaymentButton(
                 _eSewaPnp,
-                amount: room!.securityDeposit.toDouble(),
+                amount: room!.securityDeposit >= 1000
+                    ? 999
+                    : room!.securityDeposit.toDouble(),
                 callBackURL: "https://example.com",
                 productId: room!.id,
                 productName: room!.title,
-                onSuccess: (ESewaResult result) {
+                onSuccess: (ESewaResult result) async {
                   paymentDetail = result;
+                  await Provider.of<Bookings>(context, listen: false)
+                      .postPaymentDetails(
+                          paymentDetail!.productId,
+                          room!.securityDeposit.toDouble(),
+                          user!.userId,
+                          room!.id,
+                          'Security Deposit');
                 },
                 onFailure: (ESewaPaymentException e) {},
               ),

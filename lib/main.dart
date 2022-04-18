@@ -16,6 +16,8 @@ import 'package:roomfy_proj/screens/room/post_room_ad.dart';
 import 'package:roomfy_proj/screens/room/room_detail_screen.dart';
 import 'package:roomfy_proj/screens/room/room_overview_screen.dart';
 import 'package:roomfy_proj/screens/room/update_room_photo.dart';
+import 'package:roomfy_proj/screens/room/user_room_booked_screen.dart';
+import 'package:roomfy_proj/screens/room/user_room_booking_detail.dart';
 import 'package:roomfy_proj/screens/room/user_room_detail_screen.dart';
 import 'package:roomfy_proj/screens/tenant/post_tenant_ad.dart';
 import 'package:roomfy_proj/screens/tenant/tenant_detail_screen.dart';
@@ -24,6 +26,7 @@ import 'package:roomfy_proj/screens/room/user_room_screen.dart';
 import 'package:roomfy_proj/screens/tenant/user_tenant_detail_screen.dart';
 import 'package:roomfy_proj/screens/tenant/user_tenant_screen.dart';
 import 'package:roomfy_proj/screens/user/create_profile.dart';
+import 'package:roomfy_proj/screens/user/user_profile.dart';
 import 'package:roomfy_proj/screens/user/user_profile_overview.dart';
 import 'package:roomfy_proj/screens/user/user_profile_overview.dart';
 import 'screens/room/user_room_booking_screen.dart';
@@ -107,6 +110,11 @@ class MyApp extends StatelessWidget {
             UserTenantDetailScreen.routeName: (ctx) =>
                 const UserTenantDetailScreen(),
             MyRoomBookings.routeName: (ctx) => const MyRoomBookings(),
+            UserRoomBookedScreen.routeName: (ctx) =>
+                const UserRoomBookedScreen(),
+            UserRoomBookingDetail.routeName: (ctx) =>
+                const UserRoomBookingDetail(),
+            UserProfile.routeName: (ctx) => const UserProfile(),
           },
         ),
       ),
