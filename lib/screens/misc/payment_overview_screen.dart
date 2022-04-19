@@ -4,6 +4,7 @@ import 'package:roomfy_proj/providers/room_booking.dart';
 import 'package:roomfy_proj/widgets/misc/payment_item.dart';
 
 import '../../error/no_data.dart';
+import '../../providers/room.dart';
 
 class UserPaymentScreen extends StatefulWidget {
   const UserPaymentScreen({Key? key, required this.stage}) : super(key: key);
@@ -17,6 +18,7 @@ class _UserPaymentScreenState extends State<UserPaymentScreen> {
   Future? _fetchFuture;
 
   Future _refreshRooms() async {
+    Provider.of<Rooms>(context, listen: false).fetchAndSetRoom();
     return Provider.of<Bookings>(context, listen: false).fetchPaymentDetails();
   }
 

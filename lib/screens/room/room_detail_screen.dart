@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:roomfy_proj/providers/room.dart';
 import 'package:roomfy_proj/providers/user.dart';
+import 'package:roomfy_proj/screens/misc/report_room.dart';
 import 'package:roomfy_proj/screens/room/room_booking_screen.dart';
 
 import '../user/user_profile.dart';
@@ -36,6 +37,19 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(loadedRoom.title),
+        actions: [
+          PopupMenuButton(
+            itemBuilder: (_) => [
+              PopupMenuItem(
+                child: const Text('Report Room'),
+                onTap: () {
+                  Navigator.of(context).pushNamed(ReportRoom.routeName);
+                },
+              ),
+            ],
+            icon: const Icon(Icons.more_vert),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(

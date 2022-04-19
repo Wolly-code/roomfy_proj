@@ -5,12 +5,13 @@ import '../../providers/room.dart';
 import 'package:provider/provider.dart';
 
 class RoomsGrid extends StatelessWidget {
-  const RoomsGrid({Key? key}) : super(key: key);
+  const RoomsGrid({Key? key, required this.showFavs}) : super(key: key);
+  final bool showFavs;
 
   @override
   Widget build(BuildContext context) {
     final roomData = Provider.of<Rooms>(context);
-    final rooms = roomData.displayRooms;
+    final rooms = showFavs ? roomData.favoriteItems : roomData.displayRooms;
     return rooms.isEmpty
         ? NoResultFoundScreen()
         : GridView.builder(

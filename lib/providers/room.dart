@@ -31,33 +31,86 @@ class Room with ChangeNotifier {
   final bool status;
   final String photo1;
   final String photo2;
+  bool isFavorite;
 
-  Room({
-    required this.id,
-    required this.title,
-    required this.poster,
-    required this.posterId,
-    required this.description,
-    required this.created,
-    required this.email,
-    required this.phoneNumber,
-    required this.location,
-    required this.propertyType,
-    required this.totalRooms,
-    required this.price,
-    required this.minimumBookingDays,
-    required this.securityDeposit,
-    required this.internet,
-    required this.parking,
-    required this.furnished,
-    required this.balcony,
-    required this.yard,
-    required this.disableAccess,
-    required this.garage,
-    required this.status,
-    required this.photo1,
-    required this.photo2,
-  });
+  Room(
+      {required this.id,
+      required this.title,
+      required this.poster,
+      required this.posterId,
+      required this.description,
+      required this.created,
+      required this.email,
+      required this.phoneNumber,
+      required this.location,
+      required this.propertyType,
+      required this.totalRooms,
+      required this.price,
+      required this.minimumBookingDays,
+      required this.securityDeposit,
+      required this.internet,
+      required this.parking,
+      required this.furnished,
+      required this.balcony,
+      required this.yard,
+      required this.disableAccess,
+      required this.garage,
+      required this.status,
+      required this.photo1,
+      required this.photo2,
+      this.isFavorite = false});
+
+  void _setFavValue(bool newValue) {
+    isFavorite = newValue;
+    notifyListeners();
+  }
+
+  Future<void> toggleFavoriteStatus(String token, String id) async {
+    final oldStatus = isFavorite;
+    isFavorite = !isFavorite;
+    notifyListeners();
+    Uri url = Uri.parse('http://10.0.2.2:8000/rooms/fav/');
+    try {
+      final response = await http.post(url,
+          body: json.encode({'id': id}),
+          headers: {
+            'Authorization': 'Token $token',
+            'Content-Type': 'application/json'
+          });
+      print(response.statusCode);
+      print(response.body);
+      if (response.statusCode >= 400) {
+        _setFavValue(oldStatus);
+      }
+    } catch (error) {
+      _setFavValue(oldStatus);
+    }
+  }
+}
+
+class Favourite {
+  int? id;
+  bool? favourite;
+  int? room;
+  String? user;
+
+  Favourite({this.id, this.favourite, this.room, this.user});
+
+  Favourite.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    favourite = json['favourite'];
+    room = json['room'];
+    user = json['user'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['favourite'] = this.favourite;
+    data['room'] = this.room;
+    data['user'] = this.user;
+    return data;
+  }
 }
 
 class Rooms with ChangeNotifier {
@@ -66,6 +119,7 @@ class Rooms with ChangeNotifier {
   final String authToken;
   final String userId;
   List<Room> _displayRooms = [];
+  List<Favourite> _loadedFavorites = [];
 
   Rooms(this.authToken, this.userId, this._rooms);
 
@@ -81,13 +135,34 @@ class Rooms with ChangeNotifier {
     return [..._displayRooms];
   }
 
+  Future<void> fetchAndSetFavourite() async {
+    Uri url = Uri.parse('http://10.0.2.2:8000/rooms/getFav/');
+    var data = [];
+    List<Favourite> results = [];
+    try {
+      final response =
+          await http.get(url, headers: {'Authorization': 'Token $authToken'});
+      final List<Favourite> loadedFavorites = [];
+      if (response.statusCode == 200) {
+        data = json.decode(response.body);
+        results = data.map((e) => Favourite.fromJson(e)).toList();
+        _loadedFavorites = results;
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<void> fetchAndSetRoom() async {
+    fetchAndSetFavourite();
     Uri url = Uri.parse('http://10.0.2.2:8000/rooms/viewall');
+    var data = [];
+    List<Favourite> results = [];
     final response =
         await http.get(url, headers: {'Authorization': 'Token $authToken'});
+    final extractedData = json.decode(response.body);
     final List<Room> loadedRoom = [];
     try {
-      final extractedData = json.decode(response.body);
       for (var i = 0; i < extractedData.length; i++) {
         var currentElement = extractedData[i];
         loadedRoom.add(Room(
@@ -115,6 +190,9 @@ class Rooms with ChangeNotifier {
           securityDeposit: currentElement['security_deposit'],
           furnished: currentElement['furnished'],
           minimumBookingDays: currentElement['minimum_booking'],
+          isFavorite: favouriteItem(currentElement['id']) == null
+              ? false
+              : favouriteItem(currentElement['id']) ?? false,
         ));
       }
       _displayRooms =
@@ -126,6 +204,13 @@ class Rooms with ChangeNotifier {
     } catch (error) {
       rethrow;
     }
+  }
+
+  bool? favouriteItem(int id) {
+    return _loadedFavorites
+        .firstWhere((element) => element.room == id,
+            orElse: () => Favourite(favourite: false))
+        .favourite;
   }
 
   Future<void> addRoom(Room room, File photo1, File photo2) async {
@@ -269,5 +354,9 @@ class Rooms with ChangeNotifier {
     }
     await fetchAndSetRoom();
     notifyListeners();
+  }
+
+  List<Room> get favoriteItems {
+    return _rooms.where((element) => element.isFavorite).toList();
   }
 }

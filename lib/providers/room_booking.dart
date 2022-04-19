@@ -294,7 +294,9 @@ class Bookings with ChangeNotifier {
       rethrow;
     }
   }
-
+  Payment findPaymentByID(String id) {
+    return _allPayment.firstWhere((element) => element.id.toString() == id);
+  }
   Appointment findAppointmentByID(String id) {
     return _allAppointment.firstWhere((element) => element.id.toString() == id);
   }

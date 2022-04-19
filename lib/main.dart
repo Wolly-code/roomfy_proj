@@ -8,6 +8,8 @@ import 'package:roomfy_proj/providers/tenant.dart';
 import 'package:roomfy_proj/providers/user.dart';
 import 'package:roomfy_proj/screens/auth_screen.dart';
 import 'package:roomfy_proj/screens/misc/my_payment_details.dart';
+import 'package:roomfy_proj/screens/misc/report_room.dart';
+import 'package:roomfy_proj/screens/misc/user_payment_detail_screen.dart';
 import 'package:roomfy_proj/screens/my_adverts.dart';
 import 'package:roomfy_proj/screens/room/my_room_bookings.dart';
 import 'package:roomfy_proj/screens/post_ad.dart';
@@ -124,6 +126,9 @@ class MyApp extends StatelessWidget {
             UserAppointmentCreatedDetail.routeName: (ctx) =>
                 const UserAppointmentCreatedDetail(),
             MyPaymentDetail.routeName: (ctx) => const MyPaymentDetail(),
+            UserPaymentDetailScreen.routeName: (ctx) =>
+                const UserPaymentDetailScreen(),
+            ReportRoom.routeName: (ctx) => const ReportRoom(),
           },
         ),
       ),

@@ -4,6 +4,11 @@ import 'package:roomfy_proj/widgets/room/rooms_grid_view.dart';
 import '../../providers/room.dart';
 import '../../providers/user.dart';
 
+enum FilterOptions {
+  favorites,
+  all,
+}
+
 class RoomView extends StatefulWidget {
   const RoomView({Key? key}) : super(key: key);
   static const routeName = '/room-view';
@@ -13,6 +18,7 @@ class RoomView extends StatefulWidget {
 }
 
 class _RoomViewState extends State<RoomView> {
+  var _showOnlyFavorites = false;
   var _isInit = true;
   var _isLoading = true;
 
@@ -38,13 +44,36 @@ class _RoomViewState extends State<RoomView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Rooms'),
-        actions: const [],
+        actions: [
+          PopupMenuButton(
+            onSelected: (FilterOptions selectedValue) {
+              setState(() {
+                if (selectedValue == FilterOptions.favorites) {
+                  _showOnlyFavorites = true;
+                } else {
+                  _showOnlyFavorites = false;
+                }
+              });
+            },
+            itemBuilder: (_) => [
+              const PopupMenuItem(
+                child: Text('Only Favorites'),
+                value: FilterOptions.favorites,
+              ),
+              const PopupMenuItem(
+                child: Text('Show All'),
+                value: FilterOptions.all,
+              ),
+            ],
+            icon: const Icon(Icons.more_vert),
+          ),
+        ],
       ),
       body: _isLoading
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : const RoomsGrid(),
+          : RoomsGrid(showFavs: _showOnlyFavorites),
     );
   }
 }
