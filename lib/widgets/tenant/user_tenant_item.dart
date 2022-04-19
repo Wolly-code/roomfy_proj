@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../providers/tenant.dart';
 import '../../screens/tenant/user_tenant_detail_screen.dart';
 
 class UserTenantItem extends StatelessWidget {

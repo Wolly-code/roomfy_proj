@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../providers/room_booking.dart';
 import '../../providers/tenant.dart';
+import '../../providers/user.dart';
 
 class TenantDetailScreen extends StatefulWidget {
   const TenantDetailScreen({Key? key}) : super(key: key);
@@ -13,8 +15,32 @@ class TenantDetailScreen extends StatefulWidget {
 class _TenantDetailScreenState extends State<TenantDetailScreen> {
   @override
   Widget build(BuildContext context) {
+    int count = 0;
     final tenantId = ModalRoute.of(context)!.settings.arguments as String;
+    bool _customTileExpanded = false;
     final loadedTenant = Provider.of<Tenants>(context).findByID(tenantId);
+    final userData = Provider.of<Users>(context, listen: false)
+        .findByID(loadedTenant.poster);
+    Future<void> _createAppointment() async {
+      if (count == 0) {
+        var response = await Provider.of<Tenants>(context, listen: false)
+            .createAppointment(loadedTenant.id, DateTime.now().toString());
+        final snackBar = SnackBar(
+          duration: const Duration(seconds: 2),
+          content: Text(response),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        count++;
+      } else {
+        const snackBar = SnackBar(
+          duration: Duration(seconds: 2),
+          content:
+              Text('You have already created an appointment for this post'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(loadedTenant.title),
@@ -66,17 +92,7 @@ class _TenantDetailScreenState extends State<TenantDetailScreen> {
               ),
             ),
             ElevatedButton(
-                onPressed: () async {
-                  var response =
-                      await Provider.of<Tenants>(context, listen: false)
-                          .createAppointment(
-                              loadedTenant.id, DateTime.now().toString());
-                  final snackBar = SnackBar(
-                    duration: const Duration(seconds: 2),
-                    content: Text(response),
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                },
+                onPressed: _createAppointment,
                 child: const Text('Create Appointment Now'))
           ],
         ),

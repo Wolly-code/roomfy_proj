@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:roomfy_proj/constraints.dart';
 import 'package:roomfy_proj/providers/auth.dart';
-import 'package:roomfy_proj/providers/booking.dart';
+import 'package:roomfy_proj/providers/room_booking.dart';
 import 'package:roomfy_proj/providers/room.dart';
 import 'package:roomfy_proj/providers/tenant.dart';
 import 'package:roomfy_proj/providers/user.dart';
 import 'package:roomfy_proj/screens/auth_screen.dart';
+import 'package:roomfy_proj/screens/misc/my_payment_details.dart';
 import 'package:roomfy_proj/screens/my_adverts.dart';
-import 'package:roomfy_proj/screens/my_room_bookings.dart';
+import 'package:roomfy_proj/screens/room/my_room_bookings.dart';
 import 'package:roomfy_proj/screens/post_ad.dart';
 import 'package:roomfy_proj/screens/room/room_booking_screen.dart';
 import 'package:roomfy_proj/screens/main_view_screen.dart';
@@ -23,13 +24,15 @@ import 'package:roomfy_proj/screens/tenant/post_tenant_ad.dart';
 import 'package:roomfy_proj/screens/tenant/tenant_detail_screen.dart';
 import 'package:roomfy_proj/screens/tenant/tenant_overview_screen.dart';
 import 'package:roomfy_proj/screens/room/user_room_screen.dart';
+import 'package:roomfy_proj/screens/tenant/user_appointment_detail.dart';
+import 'package:roomfy_proj/screens/tenant/user_tenant_appointment.dart';
 import 'package:roomfy_proj/screens/tenant/user_tenant_detail_screen.dart';
 import 'package:roomfy_proj/screens/tenant/user_tenant_screen.dart';
 import 'package:roomfy_proj/screens/user/create_profile.dart';
 import 'package:roomfy_proj/screens/user/user_profile.dart';
 import 'package:roomfy_proj/screens/user/user_profile_overview.dart';
-import 'package:roomfy_proj/screens/user/user_profile_overview.dart';
 import 'screens/room/user_room_booking_screen.dart';
+import 'screens/tenant/my_tenant_appointment.dart';
 
 void main() {
   runApp(const MyApp());
@@ -115,6 +118,12 @@ class MyApp extends StatelessWidget {
             UserRoomBookingDetail.routeName: (ctx) =>
                 const UserRoomBookingDetail(),
             UserProfile.routeName: (ctx) => const UserProfile(),
+            UserTenantAppointmentScreen.routeName: (ctx) =>
+                const UserTenantAppointmentScreen(),
+            MyTenantAppointment.routeName: (ctx) => const MyTenantAppointment(),
+            UserAppointmentCreatedDetail.routeName: (ctx) =>
+                const UserAppointmentCreatedDetail(),
+            MyPaymentDetail.routeName: (ctx) => const MyPaymentDetail(),
           },
         ),
       ),

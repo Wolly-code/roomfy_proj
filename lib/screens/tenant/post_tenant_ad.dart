@@ -119,7 +119,7 @@ class _PostTenantAdState extends State<PostTenantAd> {
           await Provider.of<Tenants>(context, listen: false)
               .addTenantAd(tenant, _photo1Stored!, gender!, occupation!);
         }
-        // Navigator.of(context).pop();
+        Navigator.of(context).pop();
       }
     } catch (error) {
       await showDialog<Null>(

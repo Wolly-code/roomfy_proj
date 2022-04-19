@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../providers/room_booking.dart';
 import '../../providers/tenant.dart';
+import '../../providers/user.dart';
 import '../../widgets/tenant/tenants_grid_view.dart';
 
 class TenantView extends StatefulWidget {
@@ -21,6 +23,9 @@ class _TenantViewState extends State<TenantView> {
       setState(() {
         _isLoading = true;
       });
+      Provider.of<Tenants>(context, listen: false).fetchAndSetTenant();
+      Provider.of<Users>(context, listen: false).getAllUserData();
+      Provider.of<Bookings>(context,listen: false).fetchAppointmentData();
       Provider.of<Tenants>(context).fetchAndSetTenant().then((_) {
         setState(() {
           _isLoading = false;

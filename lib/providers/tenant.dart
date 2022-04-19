@@ -99,13 +99,13 @@ class Tenants with ChangeNotifier {
           photo1: currentElement['photo1'],
           email: currentElement['email'],
         ));
-        _displayTenants =
-            loadedTenant.where((element) => element.status == true).toList();
-        _owned =
-            loadedTenant.where((element) => element.poster == userId).toList();
-        _tenants = loadedTenant.reversed.toList();
-        notifyListeners();
       }
+      _displayTenants =
+          loadedTenant.where((element) => element.status == true).toList();
+      _owned =
+          loadedTenant.where((element) => element.poster == userId).toList();
+      _tenants = loadedTenant.reversed.toList();
+      notifyListeners();
     } catch (error) {
       rethrow;
     }
@@ -118,8 +118,6 @@ class Tenants with ChangeNotifier {
     if (response.statusCode >= 400) {
       throw HttpException('Could not delete tenant');
     }
-    print(response.body);
-
     await fetchAndSetTenant();
     notifyListeners();
   }
@@ -250,13 +248,16 @@ class Tenants with ChangeNotifier {
             "appointment_date": date,
             "Tenant": id,
           }));
-      if(response.statusCode>400){
+      print(response.body);
+      if (response.statusCode == 201) {
         return 'Appointment Created Successfully';
-      }else if (response.statusCode==400) {
+      } else if (response.statusCode == 400) {
+
         return 'You have already created a appointment with this user';
-      }else{
+      } else {
         return 'Unable to create Appointment';
       }
+
     } catch (e) {
       rethrow;
     }

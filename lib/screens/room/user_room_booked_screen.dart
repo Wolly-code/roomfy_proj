@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:roomfy_proj/error/no_data.dart';
 import 'package:roomfy_proj/providers/user.dart';
 import 'package:roomfy_proj/widgets/room/user_room_booking_item.dart';
-import '../../providers/booking.dart';
+import '../../providers/room_booking.dart';
 import '../../providers/room.dart';
 
 class UserRoomBookedScreen extends StatefulWidget {
@@ -41,14 +42,17 @@ class _UserRoomBookedScreenState extends State<UserRoomBookedScreen> {
                   )
                 : RefreshIndicator(
                     child: Consumer<Bookings>(
-                      builder: (ctx, bookingData, _) => Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: ListView.builder(
-                          itemCount: bookingData.yourBooked.length,
-                          itemBuilder: (ctx, i) =>
-                              UserBookingItem(item: bookingData.yourBooked[i]),
-                        ),
-                      ),
+                      builder: (ctx, bookingData, _) =>
+                          bookingData.yourBooked.isEmpty
+                              ? NoFileScreen()
+                              : Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: ListView.builder(
+                                    itemCount: bookingData.yourBooked.length,
+                                    itemBuilder: (ctx, i) => UserBookingItem(
+                                        item: bookingData.yourBooked[i]),
+                                  ),
+                                ),
                     ),
                     onRefresh: () => _refreshBookings(),
                   ),

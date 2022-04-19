@@ -50,37 +50,3 @@ class UserRoomItem extends StatelessWidget {
     );
   }
 }
-// ListTile(
-// title: Text(title),
-// leading: const CircleAvatar(
-// backgroundImage: NetworkImage(
-// 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/141766588.jpg?k=0cff52d11a4eb89efeac6f8895bce920a9a4d5bf5e1d68fd01935608efa325fd&o=&hp=1'),
-// ),
-// trailing: SizedBox(
-// width: 100,
-// child: Row(
-// children: [
-// IconButton(
-// onPressed: () {
-// Navigator.of(context)
-//     .pushNamed(EditRoomScreen.routeName, arguments: id);
-// },
-// icon: const Icon(Icons.edit),
-// ),
-// IconButton(
-// onPressed: () async {
-// try {
-// await Provider.of<Rooms>(context, listen: false)
-//     .deleteRoom(id);
-// } catch (error) {
-// scaffold.showSnackBar(
-// const SnackBar(content: Text('Deleting failed')));
-// }
-// },
-// icon: const Icon(Icons.delete),
-// color: Theme.of(context).errorColor,
-// ),
-// ],
-// ),
-// ),
-// );

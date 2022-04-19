@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:roomfy_proj/providers/auth.dart';
+import 'package:roomfy_proj/screens/misc/my_payment_details.dart';
 import 'package:roomfy_proj/screens/my_adverts.dart';
-import 'package:roomfy_proj/screens/my_room_bookings.dart';
-import 'package:roomfy_proj/screens/room/user_room_booking_screen.dart';
-import 'package:roomfy_proj/screens/room/user_room_screen.dart';
-import 'package:roomfy_proj/screens/tenant/user_tenant_screen.dart';
+import 'package:roomfy_proj/screens/room/my_room_bookings.dart';
+import 'package:roomfy_proj/screens/tenant/my_tenant_appointment.dart';
 import 'package:roomfy_proj/screens/user/user_profile_overview.dart';
 
 class UserTab extends StatelessWidget {
@@ -51,6 +50,30 @@ class UserTab extends StatelessWidget {
             title: const Text('View Room Bookings'),
             onTap: () {
               Navigator.of(context).pushNamed(MyRoomBookings.routeName);
+            },
+            trailing: const Icon(
+              Icons.arrow_forward_ios,
+              size: 18,
+            ),
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.account_box),
+            title: const Text('View Tenant Appointment'),
+            onTap: () {
+              Navigator.of(context).pushNamed(MyTenantAppointment.routeName);
+            },
+            trailing: const Icon(
+              Icons.arrow_forward_ios,
+              size: 18,
+            ),
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.account_box),
+            title: const Text('View Payment Detail'),
+            onTap: () {
+              Navigator.of(context).pushNamed(MyPaymentDetail.routeName);
             },
             trailing: const Icon(
               Icons.arrow_forward_ios,

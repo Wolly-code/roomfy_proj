@@ -3,7 +3,7 @@ import 'package:esewa_pnp/esewa_pnp.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import '../../providers/booking.dart';
+import '../../providers/room_booking.dart';
 import '../../providers/room.dart';
 import '../../providers/user.dart';
 

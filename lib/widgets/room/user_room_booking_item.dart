@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:roomfy_proj/providers/booking.dart';
+import 'package:roomfy_proj/providers/room_booking.dart';
 import 'dart:math';
 import 'package:provider/provider.dart';
 import 'package:roomfy_proj/screens/room/user_room_booking_detail.dart';

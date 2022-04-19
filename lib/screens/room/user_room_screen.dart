@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:roomfy_proj/constraints.dart';
 import 'package:roomfy_proj/widgets/room/user_room_item.dart';
+import '../../error/no_data.dart';
 import '../../providers/room.dart';
 import '../post_ad.dart';
 
@@ -39,26 +40,28 @@ class _UserRoomScreenState extends State<UserRoomScreen> {
           icon: const Icon(Icons.add)),
       body: FutureBuilder(
         future: _fetchFuture,
-        builder: (ctx, snapshot) =>
-            snapshot.connectionState == ConnectionState.waiting
-                ? const Center(child: CircularProgressIndicator())
-                : RefreshIndicator(
-                    onRefresh: () => _refreshRooms(),
-                    child: Consumer<Rooms>(
-                      builder: (ctx, roomData, _) => Padding(
-                        padding: const EdgeInsets.all(8),
+        builder: (ctx, snapshot) => snapshot.connectionState ==
+                ConnectionState.waiting
+            ? const Center(child: CircularProgressIndicator())
+            : RefreshIndicator(
+                onRefresh: () => _refreshRooms(),
+                child: Consumer<Rooms>(
+                  builder: (ctx, roomData, _) => roomData.ownedRoom.isEmpty
+                      ? NoFileScreen()
+                      : Padding(
+                        padding: const EdgeInsets.all(8.0),
                         child: ListView.builder(
-                          itemCount: roomData.ownedRoom.length,
-                          itemBuilder: (ctx, i) => UserRoomItem(
-                            id: roomData.ownedRoom[i].id,
-                            title: roomData.ownedRoom[i].title,
-                            description: roomData.ownedRoom[i].description,
-                            photo1: roomData.ownedRoom[i].photo1,
+                            itemCount: roomData.ownedRoom.length,
+                            itemBuilder: (ctx, i) => UserRoomItem(
+                              id: roomData.ownedRoom[i].id,
+                              title: roomData.ownedRoom[i].title,
+                              description: roomData.ownedRoom[i].description,
+                              photo1: roomData.ownedRoom[i].photo1,
+                            ),
                           ),
-                        ),
                       ),
-                    ),
-                  ),
+                ),
+              ),
       ),
     );
   }

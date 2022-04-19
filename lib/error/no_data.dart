@@ -24,13 +24,6 @@ class NoFileScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              child: FlatButton(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50)),
-                onPressed: () {},
-                child: Text("Home".toUpperCase()),
-              ),
             ),
           )
         ],

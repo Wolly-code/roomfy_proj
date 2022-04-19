@@ -4,6 +4,8 @@ import 'package:roomfy_proj/providers/tenant.dart';
 import 'package:roomfy_proj/screens/post_ad.dart';
 import 'package:roomfy_proj/widgets/tenant/user_tenant_item.dart';
 
+import '../../error/no_data.dart';
+
 class UserTenantScreen extends StatefulWidget {
   const UserTenantScreen({Key? key}) : super(key: key);
   static const routeName = '/User-tenant';
@@ -44,18 +46,20 @@ class _UserTenantScreenState extends State<UserTenantScreen> {
                   )
                 : RefreshIndicator(
                     child: Consumer<Tenants>(
-                      builder: (ctx, tenantData, _) => Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: ListView.builder(
-                          itemCount: tenantData.owned.length,
-                          itemBuilder: (ctx, i) => UserTenantItem(
-                            title: tenantData.owned[i].title,
-                            id: tenantData.owned[i].id,
-                            photo1: tenantData.owned[i].photo1,
-                            description: tenantData.owned[i].description,
+                      builder: (ctx, tenantData, _) => tenantData.owned.isEmpty
+                          ? NoFileScreen()
+                          : Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ListView.builder(
+                                itemCount: tenantData.owned.length,
+                                itemBuilder: (ctx, i) => UserTenantItem(
+                                  title: tenantData.owned[i].title,
+                                  id: tenantData.owned[i].id,
+                                  photo1: tenantData.owned[i].photo1,
+                                  description: tenantData.owned[i].description,
+                                ),
+                              ),
                           ),
-                        ),
-                      ),
                     ),
                     onRefresh: () => _refreshRooms(),
                   ),
