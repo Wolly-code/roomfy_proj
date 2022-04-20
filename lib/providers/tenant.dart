@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:async/async.dart';
 import 'package:roomfy_proj/exceptions/http_exception.dart';
+import 'package:roomfy_proj/providers/room.dart';
 
 class Tenant with ChangeNotifier {
   final String id;
@@ -24,26 +25,77 @@ class Tenant with ChangeNotifier {
   final String created;
   final bool status;
   final String photo1;
+  bool isFavorite;
 
-  Tenant({
-    required this.id,
-    required this.fullName,
-    required this.email,
-    required this.poster,
-    required this.gender,
-    required this.phoneNumber,
-    required this.occupation,
-    required this.age,
-    required this.petOwner,
-    required this.location,
-    required this.budget,
-    required this.preference,
-    required this.title,
-    required this.description,
-    required this.created,
-    required this.status,
-    required this.photo1,
-  });
+  Tenant(
+      {required this.id,
+      required this.fullName,
+      required this.email,
+      required this.poster,
+      required this.gender,
+      required this.phoneNumber,
+      required this.occupation,
+      required this.age,
+      required this.petOwner,
+      required this.location,
+      required this.budget,
+      required this.preference,
+      required this.title,
+      required this.description,
+      required this.created,
+      required this.status,
+      required this.photo1,
+      this.isFavorite = false});
+
+  void _setFavValue(bool newValue) {
+    isFavorite = newValue;
+    notifyListeners();
+  }
+
+  Future<void> toggleFavoriteStatus(String token, String id) async {
+    final oldStatus = isFavorite;
+    isFavorite = !isFavorite;
+    notifyListeners();
+    Uri url = Uri.parse('http://10.0.2.2:8000/tenant/fav/');
+    try {
+      final response = await http.post(url,
+          body: json.encode({'id': id}),
+          headers: {
+            'Authorization': 'Token $token',
+            'Content-Type': 'application/json'
+          });
+      if (response.statusCode >= 400) {
+        _setFavValue(oldStatus);
+      }
+    } catch (error) {
+      _setFavValue(oldStatus);
+    }
+  }
+}
+
+class tenantFavourite {
+  int? id;
+  bool? favourite;
+  int? tenant;
+  String? user;
+
+  tenantFavourite({this.id, this.favourite, this.tenant, this.user});
+
+  tenantFavourite.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    favourite = json['favourite'];
+    tenant = json['tenant'];
+    user = json['user'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['favourite'] = this.favourite;
+    data['tenant'] = this.tenant;
+    data['user'] = this.user;
+    return data;
+  }
 }
 
 class Tenants with ChangeNotifier {
@@ -52,6 +104,7 @@ class Tenants with ChangeNotifier {
   final String authToken;
   final String userId;
   List<Tenant> _displayTenants = [];
+  List<tenantFavourite> _loadedFavorites = [];
 
   Tenants(this.authToken, this.userId, this._tenants);
 
@@ -71,7 +124,26 @@ class Tenants with ChangeNotifier {
     return _tenants.firstWhere((tenant) => tenant.id == id);
   }
 
+  Future<void> fetchAndSetFavourite() async {
+    Uri url = Uri.parse('http://10.0.2.2:8000/tenant/getFav/');
+    var data = [];
+    List<tenantFavourite> results = [];
+    try {
+      final response =
+          await http.get(url, headers: {'Authorization': 'Token $authToken'});
+      final List<Favourite> loadedFavorites = [];
+      if (response.statusCode == 200) {
+        data = json.decode(response.body);
+        results = data.map((e) => tenantFavourite.fromJson(e)).toList();
+        _loadedFavorites = results;
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<void> fetchAndSetTenant() async {
+    fetchAndSetFavourite();
     Uri url = Uri.parse('http://10.0.2.2:8000/tenant/viewall');
     final response =
         await http.get(url, headers: {'Authorization': 'Token $authToken'});
@@ -98,6 +170,9 @@ class Tenants with ChangeNotifier {
           status: currentElement['status'],
           photo1: currentElement['photo1'],
           email: currentElement['email'],
+          isFavorite: favouriteItem(currentElement['id']) == null
+              ? false
+              : favouriteItem(currentElement['id']) ?? false,
         ));
       }
       _displayTenants =
@@ -109,6 +184,59 @@ class Tenants with ChangeNotifier {
     } catch (error) {
       rethrow;
     }
+  }
+
+  Future<List<Tenant>> fetchQuery({String? query}) async {
+    fetchAndSetFavourite();
+    Uri url = Uri.parse('http://10.0.2.2:8000/tenant/viewall');
+    final response =
+        await http.get(url, headers: {'Authorization': 'Token $authToken'});
+    final List<Tenant> loadedTenant = [];
+    try {
+      final extractedData = json.decode(response.body);
+      for (var i = 0; i < extractedData.length; i++) {
+        var currentElement = extractedData[i];
+        loadedTenant.add(Tenant(
+          id: currentElement['id'].toString(),
+          fullName: currentElement['full_name'],
+          poster: currentElement['poster'],
+          gender: currentElement['gender'],
+          phoneNumber: currentElement['phone_number'],
+          occupation: currentElement['occupation'],
+          age: currentElement['age'],
+          petOwner: currentElement['pet_owner'],
+          location: currentElement['location'],
+          budget: currentElement['Budget'],
+          preference: currentElement['Preference'],
+          title: currentElement['Title'],
+          description: currentElement['description'],
+          created: currentElement['created'],
+          status: currentElement['status'],
+          photo1: currentElement['photo1'],
+          email: currentElement['email'],
+          isFavorite: favouriteItem(currentElement['id']) == null
+              ? false
+              : favouriteItem(currentElement['id']) ?? false,
+        ));
+      }
+      if (query != null) {
+        _displayTenants = loadedTenant
+            .where((element) =>
+                element.title.toLowerCase().contains((query.toLowerCase())) ||
+                element.fullName.toLowerCase().contains((query.toLowerCase())))
+            .toList();
+      }
+      return _displayTenants;
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  bool? favouriteItem(int id) {
+    return _loadedFavorites
+        .firstWhere((element) => element.tenant == id,
+            orElse: () => tenantFavourite(favourite: false))
+        .favourite;
   }
 
   Future<void> deleteTenant(String id) async {
@@ -279,5 +407,9 @@ class Tenants with ChangeNotifier {
     } catch (e) {
       rethrow;
     }
+  }
+
+  List<Tenant> get favoriteItems {
+    return _displayTenants.where((element) => element.isFavorite).toList();
   }
 }

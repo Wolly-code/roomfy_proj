@@ -15,30 +15,26 @@ class RoomsGrid extends StatefulWidget {
 }
 
 class _RoomsGridState extends State<RoomsGrid> {
-  List<Room>? rooms;
-  String query = '';
-
   @override
   Widget build(BuildContext context) {
     final roomData = Provider.of<Rooms>(context);
     final rooms =
-    widget.showFavs ? roomData.favoriteItems : roomData.displayRooms;
+        widget.showFavs ? roomData.favoriteItems : roomData.displayRooms;
     return rooms.isEmpty
         ? NoResultFoundScreen()
         : GridView.builder(
-          padding: const EdgeInsets.all(10),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 1,
-              childAspectRatio: 4 / 3,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 40),
-          itemCount: rooms.length,
-          itemBuilder: (ctx, i) =>
-              ChangeNotifierProvider.value(
-                value: rooms[i],
-                child: const RoomItem(),
-              ),
-        );
+            padding: const EdgeInsets.all(10),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 1,
+                childAspectRatio: 4 / 3,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 40),
+            itemCount: rooms.length,
+            itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
+              value: rooms[i],
+              child: const RoomItem(),
+            ),
+          );
   }
 
 //   Widget buildSearch() =>

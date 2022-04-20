@@ -209,8 +209,6 @@ class Rooms with ChangeNotifier {
   Future<List<Room>> fetchQuery({String? query}) async {
     fetchAndSetFavourite();
     Uri url = Uri.parse('http://10.0.2.2:8000/rooms/viewall');
-    var data = [];
-    List<Favourite> results = [];
     final response =
         await http.get(url, headers: {'Authorization': 'Token $authToken'});
     final extractedData = json.decode(response.body);

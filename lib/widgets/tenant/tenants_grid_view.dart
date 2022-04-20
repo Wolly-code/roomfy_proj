@@ -4,13 +4,20 @@ import '../../error/no_result_found.dart';
 import '../../providers/tenant.dart';
 import 'tenant_item.dart';
 
-class TenantGrid extends StatelessWidget {
-  const TenantGrid({Key? key}) : super(key: key);
+class TenantGrid extends StatefulWidget {
+  const TenantGrid({Key? key, required this.showFavs}) : super(key: key);
+  final bool showFavs;
 
+  @override
+  State<TenantGrid> createState() => _TenantGridState();
+}
+
+class _TenantGridState extends State<TenantGrid> {
   @override
   Widget build(BuildContext context) {
     final tenantData = Provider.of<Tenants>(context);
-    final tenant = tenantData.displayTenants;
+    final tenant =
+        widget.showFavs ? tenantData.favoriteItems : tenantData.displayTenants;
     return tenant.isEmpty
         ? NoResultFoundScreen()
         : GridView.builder(
