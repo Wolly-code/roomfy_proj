@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:roomfy_proj/screens/misc/report_tenant_room.dart';
 import '../../providers/room_booking.dart';
 import '../../providers/tenant.dart';
 import '../../providers/user.dart';
+import '../user/user_profile.dart';
 
 class TenantDetailScreen extends StatefulWidget {
   const TenantDetailScreen({Key? key}) : super(key: key);
@@ -74,11 +76,35 @@ class _TenantDetailScreenState extends State<TenantDetailScreen> {
             const SizedBox(
               height: 10,
             ),
-            Text('Poster: ' + loadedTenant.poster,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                )),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                child: ExpansionTile(
+                  leading: CircleAvatar(
+                    backgroundImage: NetworkImage(userData.profile, scale: 10),
+                  ),
+                  title: Text(userData.firstName + " " + userData.lastName),
+                  subtitle: Text('Location: ' + userData.location),
+                  trailing: Icon(
+                    _customTileExpanded
+                        ? Icons.arrow_drop_down_circle
+                        : Icons.arrow_drop_down,
+                  ),
+                  children: <Widget>[
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(UserProfile.routeName,
+                            arguments: loadedTenant.poster);
+                      },
+                      child: const Text('View User'),
+                    )
+                  ],
+                  onExpansionChanged: (bool expanded) {
+                    setState(() => _customTileExpanded = expanded);
+                  },
+                ),
+              ),
+            ),
             const SizedBox(
               height: 10,
             ),
@@ -91,9 +117,23 @@ class _TenantDetailScreenState extends State<TenantDetailScreen> {
                 softWrap: true,
               ),
             ),
-            ElevatedButton(
-                onPressed: _createAppointment,
-                child: const Text('Create Appointment Now'))
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                      onPressed: _createAppointment,
+                      child: const Text('Create Appointment Now')),
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pushNamed(ReportTenantScreen.routeName);
+                      },
+                      child: const Text('Report')),
+                ],
+              ),
+            )
           ],
         ),
       ),

@@ -206,6 +206,61 @@ class Rooms with ChangeNotifier {
     }
   }
 
+  Future<List<Room>> fetchQuery({String? query}) async {
+    fetchAndSetFavourite();
+    Uri url = Uri.parse('http://10.0.2.2:8000/rooms/viewall');
+    var data = [];
+    List<Favourite> results = [];
+    final response =
+        await http.get(url, headers: {'Authorization': 'Token $authToken'});
+    final extractedData = json.decode(response.body);
+    final List<Room> loadedRoom = [];
+    try {
+      for (var i = 0; i < extractedData.length; i++) {
+        var currentElement = extractedData[i];
+        loadedRoom.add(Room(
+          id: currentElement['id'].toString(),
+          title: currentElement['title'],
+          poster: currentElement['poster'],
+          posterId: currentElement['poster_id'].toString(),
+          description: currentElement['description'],
+          created: currentElement['created'],
+          email: currentElement['email'],
+          phoneNumber: currentElement['phone_number'],
+          totalRooms: currentElement['total_rooms'],
+          price: currentElement['price'],
+          internet: currentElement['internet'],
+          parking: currentElement['parking'],
+          balcony: currentElement['Balcony'],
+          yard: currentElement['Yard'],
+          disableAccess: currentElement['Disabled_Access'],
+          garage: currentElement['Garage'],
+          status: currentElement['status'],
+          location: currentElement['location'],
+          propertyType: currentElement['property_type'],
+          photo1: currentElement['photo1'],
+          photo2: currentElement['photo2'],
+          securityDeposit: currentElement['security_deposit'],
+          furnished: currentElement['furnished'],
+          minimumBookingDays: currentElement['minimum_booking'],
+          isFavorite: favouriteItem(currentElement['id']) == null
+              ? false
+              : favouriteItem(currentElement['id']) ?? false,
+        ));
+      }
+      if (query != null) {
+        _displayRooms = loadedRoom
+            .where((element) =>
+                element.title.toLowerCase().contains((query.toLowerCase())) ||
+                element.location.toLowerCase().contains((query.toLowerCase())))
+            .toList();
+      }
+      return _displayRooms;
+    } catch (error) {
+      rethrow;
+    }
+  }
+
   bool? favouriteItem(int id) {
     return _loadedFavorites
         .firstWhere((element) => element.room == id,
@@ -357,6 +412,6 @@ class Rooms with ChangeNotifier {
   }
 
   List<Room> get favoriteItems {
-    return _rooms.where((element) => element.isFavorite).toList();
+    return _displayRooms.where((element) => element.isFavorite).toList();
   }
 }

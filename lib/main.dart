@@ -8,7 +8,7 @@ import 'package:roomfy_proj/providers/tenant.dart';
 import 'package:roomfy_proj/providers/user.dart';
 import 'package:roomfy_proj/screens/auth_screen.dart';
 import 'package:roomfy_proj/screens/misc/my_payment_details.dart';
-import 'package:roomfy_proj/screens/misc/report_room.dart';
+import 'package:roomfy_proj/screens/misc/report_tenant_room.dart';
 import 'package:roomfy_proj/screens/misc/user_payment_detail_screen.dart';
 import 'package:roomfy_proj/screens/my_adverts.dart';
 import 'package:roomfy_proj/screens/room/my_room_bookings.dart';
@@ -33,6 +33,7 @@ import 'package:roomfy_proj/screens/tenant/user_tenant_screen.dart';
 import 'package:roomfy_proj/screens/user/create_profile.dart';
 import 'package:roomfy_proj/screens/user/user_profile.dart';
 import 'package:roomfy_proj/screens/user/user_profile_overview.dart';
+import 'screens/misc/report_room_screen.dart';
 import 'screens/room/user_room_booking_screen.dart';
 import 'screens/tenant/my_tenant_appointment.dart';
 
@@ -128,7 +129,8 @@ class MyApp extends StatelessWidget {
             MyPaymentDetail.routeName: (ctx) => const MyPaymentDetail(),
             UserPaymentDetailScreen.routeName: (ctx) =>
                 const UserPaymentDetailScreen(),
-            ReportRoom.routeName: (ctx) => const ReportRoom(),
+            ReportRoomScreen.routeName: (ctx) => const ReportRoomScreen(),
+            ReportTenantScreen.routeName: (ctx) => const ReportTenantScreen(),
           },
         ),
       ),

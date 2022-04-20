@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:roomfy_proj/widgets/room/rooms_grid_view.dart';
 import '../../providers/room.dart';
 import '../../providers/user.dart';
+import '../../widgets/search_widget.dart';
+import '../misc/room_search_bar.dart';
 
 enum FilterOptions {
   favorites,
@@ -41,10 +43,15 @@ class _RoomViewState extends State<RoomView> {
 
   @override
   Widget build(BuildContext context) {
+    String query = '';
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Rooms'),
         actions: [
+          IconButton(
+              onPressed: () {
+                showSearch(context: context, delegate: SearchUser());
+              },
+              icon: const Icon(Icons.search_sharp)),
           PopupMenuButton(
             onSelected: (FilterOptions selectedValue) {
               setState(() {

@@ -294,9 +294,31 @@ class Bookings with ChangeNotifier {
       rethrow;
     }
   }
+
+  Future<void> reportRoom(String description, String id) async {
+    Uri url = Uri.parse('http://10.0.2.2:8000/rooms/$id/report');
+    try {
+      var response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Token $authToken',
+          'Content-Type': 'application/json'
+        },
+        body: json.encode(
+          {'description': description},
+        ),
+      );
+      print(response.statusCode);
+      print(response.body);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Payment findPaymentByID(String id) {
     return _allPayment.firstWhere((element) => element.id.toString() == id);
   }
+
   Appointment findAppointmentByID(String id) {
     return _allAppointment.firstWhere((element) => element.id.toString() == id);
   }

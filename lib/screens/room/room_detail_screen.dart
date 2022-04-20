@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:roomfy_proj/providers/room.dart';
 import 'package:roomfy_proj/providers/user.dart';
-import 'package:roomfy_proj/screens/misc/report_room.dart';
+import 'package:roomfy_proj/screens/misc/report_room_screen.dart';
+import 'package:roomfy_proj/screens/misc/report_tenant_room.dart';
 import 'package:roomfy_proj/screens/room/room_booking_screen.dart';
 
 import '../user/user_profile.dart';
@@ -37,19 +38,8 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(loadedRoom.title),
-        actions: [
-          PopupMenuButton(
-            itemBuilder: (_) => [
-              PopupMenuItem(
-                child: const Text('Report Room'),
-                onTap: () {
-                  Navigator.of(context).pushNamed(ReportRoom.routeName);
-                },
-              ),
-            ],
-            icon: const Icon(Icons.more_vert),
-          ),
-        ],
+        actions: [],
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -268,13 +258,29 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
                       trailing: Text(loadedRoom.propertyType),
                     ),
                   ),
-                  ElevatedButton(
-                    style: raisedButtonStyle,
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(BookingScreen.routeName,
-                          arguments: loadedRoom.id);
-                    },
-                    child: const Text('Book'),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton(
+                        style: raisedButtonStyle,
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(
+                              BookingScreen.routeName,
+                              arguments: loadedRoom.id);
+                        },
+                        child: const Text('Book'),
+                      ),
+                      ElevatedButton(
+                        style: raisedButtonStyle,
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(
+                              ReportRoomScreen.routeName,
+                              arguments: loadedRoom.id);
+                        },
+                        child: const Text('Report'),
+                      ),
+                    ],
                   ),
                 ],
               ),

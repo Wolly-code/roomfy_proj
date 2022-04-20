@@ -252,12 +252,30 @@ class Tenants with ChangeNotifier {
       if (response.statusCode == 201) {
         return 'Appointment Created Successfully';
       } else if (response.statusCode == 400) {
-
         return 'You have already created a appointment with this user';
       } else {
         return 'Unable to create Appointment';
       }
+    } catch (e) {
+      rethrow;
+    }
+  }
 
+  Future<void> reportTenant(String description, String id) async {
+    Uri url = Uri.parse('http://10.0.2.2:8000/tenant/$id/report');
+    try {
+      var response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Token $authToken',
+          'Content-Type': 'application/json'
+        },
+        body: json.encode(
+          {'description': description},
+        ),
+      );
+      print(response.statusCode);
+      print(response.body);
     } catch (e) {
       rethrow;
     }
