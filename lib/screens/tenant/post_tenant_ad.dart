@@ -119,6 +119,11 @@ class _PostTenantAdState extends State<PostTenantAd> {
           await Provider.of<Tenants>(context, listen: false)
               .addTenantAd(tenant, _photo1Stored!, gender!, occupation!);
         }
+        const snackBar = SnackBar(
+          duration: Duration(seconds: 2),
+          content: Text("Tenant Advertisement Created Successfully"),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
         Navigator.of(context).pop();
       }
     } catch (error) {
@@ -419,41 +424,45 @@ class _PostTenantAdState extends State<PostTenantAd> {
                   },
                 ),
                 const Divider(),
-                const Text(
-                  'PHOTOS',
-                  style: TextStyle(fontSize: 15),
+                const Center(
+                  child: Text(
+                    'PHOTO',
+                    style: TextStyle(fontSize: 15),
+                  ),
                 ),
-                Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 1, color: Colors.grey),
-                      ),
-                      child: _photo1Stored != null
-                          ? GestureDetector(
-                              onTap: () async {
-                                _photo1();
-                              },
-                              child: Image.file(
-                                _photo1Stored!,
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                              ),
-                            )
-                          : Container(
-                              height: 100,
-                              width: 100,
-                              child: IconButton(
-                                onPressed: () async {
+                Center(
+                  child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 1, color: Colors.grey),
+                        ),
+                        child: _photo1Stored != null
+                            ? GestureDetector(
+                                onTap: () async {
                                   _photo1();
                                 },
-                                icon: const Icon(Icons.add),
+                                child: Image.file(
+                                  _photo1Stored!,
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                ),
+                              )
+                            : Container(
+                                height: 100,
+                                width: 100,
+                                child: IconButton(
+                                  onPressed: () async {
+                                    _photo1();
+                                  },
+                                  icon: const Icon(Icons.add),
+                                ),
+                                decoration: BoxDecoration(border: Border.all()),
                               ),
-                              decoration: BoxDecoration(border: Border.all()),
-                            ),
-                    ))
+                      )),
+                )
               ],
             ),
           ),

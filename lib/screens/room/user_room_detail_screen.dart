@@ -81,6 +81,11 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
       await Provider.of<Rooms>(context, listen: false)
           .updateRoomDetail(_editedRoom.id, _editedRoom);
       await Provider.of<Rooms>(context, listen: false).fetchAndSetRoom();
+      const snackBar = SnackBar(
+        duration: Duration(seconds: 2),
+        content: Text("Room detail updated Successfully"),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
       Navigator.of(context).pop();
     } catch (error) {
       rethrow;
@@ -338,7 +343,7 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                     const Padding(
                       padding: EdgeInsets.only(bottom: 8.0),
                       child: Text(
-                        'Minimum Booking Days:',
+                        'Property Type:',
                         textAlign: TextAlign.left,
                         style: TextStyle(fontSize: 15),
                       ),
@@ -423,6 +428,17 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                                 }),
                           ),
                         ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(bottom: 8.0),
+                      child: Text(
+                        'Minimum Booking Days:',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(fontSize: 15),
                       ),
                     ),
                     Padding(
@@ -932,7 +948,7 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10),
                       child: TextFormField(
-                        initialValue: _editedRoom.description,
+                        initialValue: _editedRoom.title,
                         decoration: const InputDecoration(
                           labelStyle: TextStyle(fontSize: 15),
                           labelText: 'Title',
@@ -979,7 +995,7 @@ class _UserRoomDetailScreenState extends State<UserRoomDetailScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: TextFormField(
-                        initialValue: _editedRoom.title,
+                        initialValue: _editedRoom.description,
                         decoration: const InputDecoration(
                           labelStyle: TextStyle(fontSize: 15),
                           labelText: 'Description',

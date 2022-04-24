@@ -7,6 +7,7 @@ import 'package:roomfy_proj/screens/misc/report_room_screen.dart';
 import 'package:roomfy_proj/screens/misc/report_tenant_room.dart';
 import 'package:roomfy_proj/screens/room/room_booking_screen.dart';
 
+import '../user/create_profile.dart';
 import '../user/user_profile.dart';
 
 class RoomDetailScreen extends StatefulWidget {
@@ -24,6 +25,7 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
     final roomId = ModalRoute.of(context)!.settings.arguments as String;
     final loadedRoom =
         Provider.of<Rooms>(context, listen: false).findByID(roomId);
+    final _hasUser = Provider.of<Users>(context, listen: false);
     final userData =
         Provider.of<Users>(context, listen: false).findByID(loadedRoom.poster);
     final ButtonStyle raisedButtonStyle = ElevatedButton.styleFrom(
@@ -38,7 +40,6 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(loadedRoom.title),
-        actions: [],
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -75,19 +76,26 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    loadedRoom.title,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w800, fontSize: 30),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15.0, vertical: 10),
+                    child: Text(
+                      loadedRoom.title,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w800, fontSize: 30),
+                    ),
                   ),
                   const SizedBox(
                     height: 10,
                   ),
-                  Text(
-                    'Ad: #' + loadedRoom.id,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
+                  ListTile(
+                    subtitle: Text(
+                      'Ad: #' + loadedRoom.id,
+                    ),
+                    title: Text(
+                      loadedRoom.description,
+                      textAlign: TextAlign.left,
+                      softWrap: true,
                     ),
                   ),
                   Padding(
@@ -123,11 +131,6 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
                       ),
                     ),
                   ),
-                  Text(
-                    loadedRoom.description,
-                    textAlign: TextAlign.left,
-                    softWrap: true,
-                  ),
                   const Divider(),
                   const Padding(
                     padding: EdgeInsets.all(8.0),
@@ -138,108 +141,100 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
                       ),
                     ),
                   ),
-                  Text('${loadedRoom.totalRooms} rooms'),
-                  Text('in ${loadedRoom.location}'),
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Row(
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.only(right: 10.0),
-                          child: Icon(Icons.attach_money_rounded, size: 29),
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Rent',
-                              style: TextStyle(fontSize: 15),
-                            ),
-                            Text(
-                              loadedRoom.price.toString() + ' / Daily',
-                              style: const TextStyle(fontSize: 18),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          width: 50,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20.0),
-                          child: Column(
-                            children: [
-                              const Text('Minimum Stay'),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8.0),
-                                child: Text(
-                                    loadedRoom.minimumBookingDays.toString() +
-                                        ' Days'),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
+                  ListTile(
+                    leading: const Icon(
+                      Icons.attach_money_rounded,
+                      size: 45,
                     ),
-                  ),
-                  const Divider(),
-                  const Text(
-                    'Amenities',
-                    style: TextStyle(
-                      fontSize: 20,
+                    title: const Text(
+                      'Rent',
+                      style: TextStyle(fontSize: 15),
                     ),
-                  ),
-                  amenities(
-                    name: 'Garage',
-                    loadedRoom: loadedRoom.garage,
-                    icon: const Icon(Icons.garage),
-                  ),
-                  amenities(
-                    name: 'Internet',
-                    loadedRoom: loadedRoom.internet,
-                    icon: const Icon(Icons.wifi),
-                  ),
-                  amenities(
-                    name: 'Parking',
-                    loadedRoom: loadedRoom.parking,
-                    icon: const Icon(Icons.directions_car),
-                  ),
-                  amenities(
-                    name: 'Balcony',
-                    loadedRoom: loadedRoom.balcony,
-                    icon: const Icon(Icons.balcony),
-                  ),
-                  amenities(
-                    name: 'Yard',
-                    loadedRoom: loadedRoom.yard,
-                    icon: const Icon(Icons.yard),
-                  ),
-                  const Divider(),
-                  const Text(
-                    'Amenities',
-                    style: TextStyle(
-                      fontSize: 20,
+                    subtitle: Text(
+                      loadedRoom.price.toString() + ' / Daily',
+                      style: const TextStyle(fontSize: 17),
                     ),
+                    trailing: Text('Minimum Booking: ' +
+                        loadedRoom.minimumBookingDays.toString() +
+                        ' Days'),
                   ),
-                  Row(
+                  Column(
                     children: [
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.07,
-                        width: 180,
-                        child: ListTile(
-                          leading: const Icon(Icons.wheelchair_pickup_outlined),
-                          trailing: Text(
-                            'Disabled Access',
-                            textAlign: TextAlign.start,
-                            style: loadedRoom.disableAccess
-                                ? const TextStyle(
-                                    decoration: TextDecoration.none)
-                                : const TextStyle(
-                                    decoration: TextDecoration.lineThrough),
-                          ),
-                        ),
+                      ListTile(
+                        leading: const Icon(Icons.bed),
+                        title:
+                            Text(loadedRoom.totalRooms.toString() + ' / rooms'),
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.map),
+                        title: Text(loadedRoom.location),
+                      ),
+                      ListTile(
+                        leading: const Text('Security Deposit: '),
+                        title: Text(loadedRoom.securityDeposit.toString()),
                       ),
                     ],
+                  ),
+                  const Divider(),
+                  const Divider(),
+                  const Text(
+                    'Amenities',
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                  const Divider(),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        amenities(
+                          name: 'Garage',
+                          loadedRoom: loadedRoom.garage,
+                          icon: const Icon(Icons.garage),
+                        ),
+                        const Divider(),
+                        amenities(
+                          name: 'Internet',
+                          loadedRoom: loadedRoom.internet,
+                          icon: const Icon(Icons.wifi),
+                        ),
+                        const Divider(),
+                        amenities(
+                          name: 'Parking',
+                          loadedRoom: loadedRoom.parking,
+                          icon: const Icon(Icons.directions_car),
+                        ),
+                        const Divider(),
+                        amenities(
+                          name: 'Balcony',
+                          loadedRoom: loadedRoom.balcony,
+                          icon: const Icon(Icons.balcony),
+                        ),
+                        const Divider(),
+                        amenities(
+                          name: 'Yard',
+                          loadedRoom: loadedRoom.yard,
+                          icon: const Icon(Icons.yard),
+                        ),
+                        const Divider(),
+                        amenities(
+                          name: 'Furnished',
+                          loadedRoom: loadedRoom.furnished,
+                          icon: const Icon(Icons.bed),
+                        ),
+                        const Divider(),
+                        amenities(
+                          name: 'Disabled Access',
+                          loadedRoom: loadedRoom.disableAccess,
+                          icon: const Icon(Icons.wheelchair_pickup_outlined),
+                        ),
+                        const Divider(
+                          height: 0.6,
+                          color: Colors.black87,
+                        ),
+                      ],
+                    ),
                   ),
                   const Divider(),
                   const Text(
@@ -248,26 +243,60 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
                       fontSize: 20,
                     ),
                   ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.5,
-                    height: MediaQuery.of(context).size.height * 0.09,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: ListTile(
-                      leading: loadedRoom.propertyType == "Apartment"
+                      leading: loadedRoom.propertyType == 'Apartment'
                           ? const Icon(Icons.apartment)
                           : const Icon(Icons.house),
-                      trailing: Text(loadedRoom.propertyType),
+                      title: Text(loadedRoom.propertyType),
                     ),
+                  ),
+                  const Divider(),
+                  const Text(
+                    'Contact Detail',
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      ListTile(
+                        leading: const Icon(Icons.mail),
+                        title: Text(loadedRoom.email),
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.phone),
+                        title: Text(loadedRoom.phoneNumber),
+                      ),
+                    ],
                   ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       ElevatedButton(
                         style: raisedButtonStyle,
                         onPressed: () {
-                          Navigator.of(context).pushNamed(
-                              BookingScreen.routeName,
-                              arguments: loadedRoom.id);
+                          if (_hasUser.userObj == null) {
+                            final snackBar = SnackBar(
+                              duration: const Duration(seconds: 2),
+                              content:
+                              const Text("You can't book an Advert without creating a Profile"),
+                              action: SnackBarAction(
+                                label: 'Create Profile',
+                                onPressed: () async {
+                                  Navigator.of(context).pushNamed(CreateProfile.routeName);
+                                },
+                              ),
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                            return;
+                          } else {
+                            Navigator.of(context).pushNamed(
+                                BookingScreen.routeName,
+                                arguments: loadedRoom.id);
+                          }
                         },
                         child: const Text('Book'),
                       ),
@@ -312,23 +341,11 @@ class amenities extends StatefulWidget {
 class _amenitiesState extends State<amenities> {
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(
-          height: MediaQuery.of(context).size.height * 0.07,
-          width: 120,
-          child: ListTile(
-            leading: widget.icon,
-            trailing: Text(
-              widget.name,
-              textAlign: TextAlign.start,
-              style: widget.loadedRoom
-                  ? const TextStyle(decoration: TextDecoration.none)
-                  : const TextStyle(decoration: TextDecoration.lineThrough),
-            ),
-          ),
-        ),
-      ],
+    return ListTile(
+      leading: widget.icon,
+      title: widget.loadedRoom
+          ? Text('Has ${widget.name}')
+          : Text('No ${widget.name}'),
     );
   }
 }

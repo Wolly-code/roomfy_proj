@@ -96,10 +96,20 @@ class _CreateProfileState extends State<CreateProfile> {
       if (_photo1Stored != null) {
         await Provider.of<Users>(context, listen: false).updateUserWithPhoto(
             users, _photo1Stored!, _editedUser.id, gender.toString());
+        const snackBar = SnackBar(
+          duration: Duration(seconds: 2),
+          content: Text("User Profile Updated Successfully"),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
         Navigator.of(context).pop();
       } else {
         await Provider.of<Users>(context, listen: false)
             .updateUserWithoutPhoto(users, _editedUser.id, gender.toString());
+        const snackBar = SnackBar(
+          duration: Duration(seconds: 2),
+          content: Text("User Profile Updated Successfully"),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
         Navigator.of(context).pop();
       }
     } else {
@@ -123,10 +133,21 @@ class _CreateProfileState extends State<CreateProfile> {
             gender = 'Male';
             await Provider.of<Users>(context, listen: false)
                 .addUser(users, _photo1Stored!, gender!);
+            const snackBar = SnackBar(
+              duration: Duration(seconds: 2),
+              content: Text("User Profile Created Successfully"),
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
           } else {
             await Provider.of<Users>(context, listen: false)
                 .addUser(users, _photo1Stored!, gender!);
+            const snackBar = SnackBar(
+              duration: Duration(seconds: 2),
+              content: Text("User Profile Created Successfully"),
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
           }
+
           Navigator.of(context).pop();
         }
       } catch (e) {

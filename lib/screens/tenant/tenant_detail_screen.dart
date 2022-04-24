@@ -1,9 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:roomfy_proj/screens/misc/report_tenant_room.dart';
 import '../../providers/room_booking.dart';
 import '../../providers/tenant.dart';
 import '../../providers/user.dart';
+import '../user/create_profile.dart';
 import '../user/user_profile.dart';
 
 class TenantDetailScreen extends StatefulWidget {
@@ -21,9 +23,35 @@ class _TenantDetailScreenState extends State<TenantDetailScreen> {
     final tenantId = ModalRoute.of(context)!.settings.arguments as String;
     bool _customTileExpanded = false;
     final loadedTenant = Provider.of<Tenants>(context).findByID(tenantId);
+    final _hasUser= Provider.of<Users>(context,listen: false);
     final userData = Provider.of<Users>(context, listen: false)
         .findByID(loadedTenant.poster);
+    final user = Provider.of<Users>(context, listen: false).userObj;
     Future<void> _createAppointment() async {
+      if(_hasUser.userObj==null){
+        final snackBar = SnackBar(
+          duration: const Duration(seconds: 2),
+          content:
+          const Text("You can't book an Advert without creating a Profile"),
+          action: SnackBarAction(
+            label: 'Create Profile',
+            onPressed: () async {
+              Navigator.of(context).pushNamed(CreateProfile.routeName);
+            },
+          ),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        return;
+      }
+      if (loadedTenant.poster == user?.userId) {
+        const snackBar = SnackBar(
+          duration: Duration(seconds: 2),
+          content:
+              Text('You cannot create appointment in your own advertisement'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        return;
+      }
       if (count == 0) {
         var response = await Provider.of<Tenants>(context, listen: false)
             .createAppointment(loadedTenant.id, DateTime.now().toString());
@@ -108,14 +136,85 @@ class _TenantDetailScreenState extends State<TenantDetailScreen> {
             const SizedBox(
               height: 10,
             ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              width: double.infinity,
-              child: Text(
-                loadedTenant.description,
-                textAlign: TextAlign.center,
-                softWrap: true,
-              ),
+            const Text('Tenant Details'),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    elevation: 4,
+                    child: Column(
+                      children: [
+                        //row for each deatails
+                        ListTile(
+                          leading: const Icon(CupertinoIcons.profile_circled),
+                          title: Text(loadedTenant.fullName),
+                        ),
+                        const Divider(),
+                        ListTile(
+                          leading: const Icon(Icons.male),
+                          title: Text(loadedTenant.gender),
+                        ),
+                        const Divider(),
+                        ListTile(
+                          leading: const Icon(Icons.map),
+                          title: Text(loadedTenant.location),
+                        ),
+                        const Divider(),
+                        ListTile(
+                          leading:
+                              const Icon(Icons.supervised_user_circle_sharp),
+                          title: Text(loadedTenant.description),
+                        ),
+                        const Divider(),
+                        ListTile(
+                          leading: const Icon(Icons.mail),
+                          title: Text(loadedTenant.email),
+                        ),
+                        const Divider(),
+                        ListTile(
+                          leading: const Icon(Icons.phone),
+                          title: Text(loadedTenant.phoneNumber),
+                        ),
+                        const Divider(),
+                        ListTile(
+                          leading: const Icon(Icons.monetization_on),
+                          title: Text('NRS ' +
+                              loadedTenant.budget.toString() +
+                              '/ month'),
+                        ),
+                        const Divider(),
+                        ListTile(
+                          leading: const Icon(Icons.cake),
+                          title: Text(loadedTenant.age.toString()),
+                        ),
+                        const Divider(),
+                        ListTile(
+                          leading: const Icon(Icons.cases_outlined),
+                          title: Text(loadedTenant.occupation),
+                        ),
+                        const Divider(),
+                        ListTile(
+                          leading: const Text('Pref: '),
+                          title: Text(loadedTenant.preference),
+                        ),
+                        const Divider(),
+                        ListTile(
+                          leading: const Icon(Icons.pets),
+                          title: loadedTenant.petOwner
+                              ? const Text('Pet Owner')
+                              : const Text('Not a pet owner'),
+                        ),
+                        const Divider(
+                          height: 0.6,
+                          color: Colors.black87,
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              ],
             ),
             Padding(
               padding: const EdgeInsets.all(15.0),
@@ -127,8 +226,9 @@ class _TenantDetailScreenState extends State<TenantDetailScreen> {
                       child: const Text('Create Appointment Now')),
                   ElevatedButton(
                       onPressed: () {
-                        Navigator.of(context)
-                            .pushNamed(ReportTenantScreen.routeName);
+                        Navigator.of(context).pushNamed(
+                            ReportTenantScreen.routeName,
+                            arguments: loadedTenant.id);
                       },
                       child: const Text('Report')),
                 ],

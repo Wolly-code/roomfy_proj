@@ -6,8 +6,6 @@ import 'package:roomfy_proj/screens/room/room_detail_screen.dart';
 import 'package:roomfy_proj/screens/room/room_overview_screen.dart';
 
 class RoomItem extends StatelessWidget {
-  const RoomItem({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     final room = Provider.of<Room>(context, listen: false);
@@ -40,9 +38,6 @@ class RoomItem extends StatelessWidget {
             room.title,
             textAlign: TextAlign.center,
           ),
-          trailing: IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.local_attraction_outlined)),
         ),
       ),
     );

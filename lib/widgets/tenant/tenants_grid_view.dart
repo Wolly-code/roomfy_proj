@@ -30,7 +30,7 @@ class _TenantGridState extends State<TenantGrid> {
             itemCount: tenant.length,
             itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
               value: tenant[i],
-              child: const TenantItem(),
+              child: TenantItem(),
             ),
           );
   }

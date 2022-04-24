@@ -18,7 +18,7 @@ class _MyRoomBookingsState extends State<MyRoomBookings> {
         length: 2,
         child: Scaffold(
           appBar: AppBar(
-              title: const Text('My Ads'),
+              title: const Text('My Room Bookings'),
               bottom: const TabBar(tabs: [
                 Tab(
                   text: 'Your Booking',

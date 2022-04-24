@@ -135,15 +135,15 @@ class _AuthCardState extends State<AuthCard>
             _authData['email'].toString(), _authData['password'].toString());
       }
     } on HttpException catch (error) {
-      var errorMessage = 'Authentication Failed';
-      if (error.toString().contains('EMAIL_EXISTS')) {
-        errorMessage = 'This email address is already in use';
+      var errorMessage = 'Wrong Authentication Provided';
+      if (error.toString().contains('USER_EXISTS')) {
+        errorMessage = 'This username is already in use';
       } else if (error.toString().contains('INVALID_EMAIL')) {
         errorMessage = 'This is not a valid email address';
       } else if (error.toString().contains('WEAK_PASSWORD')) {
         errorMessage = 'This password is weak';
-      } else if (error.toString().contains('EMAIL_NOT_FOUND')) {
-        errorMessage = 'Could not find a user with that email';
+      } else if (error.toString().contains('USER_NOT_FOUND')) {
+        errorMessage = 'Could not find a user with that username';
       } else if (error.toString().contains('INVALID_PASSWORD')) {
         errorMessage = 'Invalid Password';
       }

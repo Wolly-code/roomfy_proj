@@ -34,7 +34,7 @@ class UserTab extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.account_box),
+            leading: const Icon(Icons.account_tree_outlined),
             title: const Text('My Ads'),
             onTap: () {
               Navigator.of(context).pushNamed(MyAdverts.routeName);
@@ -46,7 +46,7 @@ class UserTab extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.account_box),
+            leading: const Icon(Icons.chat_rounded),
             title: const Text('View Room Bookings'),
             onTap: () {
               Navigator.of(context).pushNamed(MyRoomBookings.routeName);
@@ -58,7 +58,7 @@ class UserTab extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.account_box),
+            leading: const Icon(Icons.chat_rounded),
             title: const Text('View Tenant Appointment'),
             onTap: () {
               Navigator.of(context).pushNamed(MyTenantAppointment.routeName);
@@ -70,7 +70,7 @@ class UserTab extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.account_box),
+            leading: const Icon(Icons.attach_money_rounded),
             title: const Text('View Payment Detail'),
             onTap: () {
               Navigator.of(context).pushNamed(MyPaymentDetail.routeName);

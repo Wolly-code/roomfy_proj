@@ -47,7 +47,7 @@ class _ReportTenantScreenState extends State<ReportTenantScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Report Room Ad'),
+        title: const Text('Report Tenant Ad'),
         centerTitle: true,
         actions: [
           TextButton(onPressed: _saveReport, child: const Text('Place Report'))
@@ -59,7 +59,7 @@ class _ReportTenantScreenState extends State<ReportTenantScreen> {
           children: [
             const Padding(
               padding: EdgeInsets.all(8.0),
-              child: Text('Enter you reason for reporting this room'),
+              child: Text('Enter you reason for reporting this tenant'),
             ),
             const SizedBox(
               height: 25,

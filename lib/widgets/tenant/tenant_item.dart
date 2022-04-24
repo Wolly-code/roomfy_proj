@@ -5,8 +5,6 @@ import '../../providers/auth.dart';
 import '../../providers/tenant.dart';
 
 class TenantItem extends StatelessWidget {
-  const TenantItem({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     final tenant = Provider.of<Tenant>(context, listen: false);

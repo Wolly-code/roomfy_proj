@@ -77,8 +77,6 @@ class Room with ChangeNotifier {
             'Authorization': 'Token $token',
             'Content-Type': 'application/json'
           });
-      print(response.statusCode);
-      print(response.body);
       if (response.statusCode >= 400) {
         _setFavValue(oldStatus);
       }
@@ -195,6 +193,7 @@ class Rooms with ChangeNotifier {
               : favouriteItem(currentElement['id']) ?? false,
         ));
       }
+
       _displayRooms =
           loadedRoom.where((element) => element.status == true).toList();
       _ownedRoom =

@@ -84,6 +84,11 @@ class _PostRoomAdState extends State<PostRoomAd> {
         _photo1Stored!,
         _photo2Stored!,
       );
+      const snackBar = SnackBar(
+        duration: Duration(seconds: 2),
+        content: Text("Room Advertisement Created Successfully"),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
       Navigator.of(context).pop();
     } catch (error) {
       rethrow;
@@ -305,6 +310,7 @@ class _PostRoomAdState extends State<PostRoomAd> {
                       decoration: const InputDecoration(
                         labelStyle: TextStyle(fontSize: 15),
                         labelText: 'Minimum Booking Limit:',
+                        hintText: 'Enter Days (Eg: 7)',
                         border: OutlineInputBorder(),
                       ),
                       validator: (value) {
@@ -337,20 +343,18 @@ class _PostRoomAdState extends State<PostRoomAd> {
                           status: _editedRoom.status,
                           photo1: '',
                           photo2: '',
-                          securityDeposit:_editedRoom.securityDeposit,
+                          securityDeposit: _editedRoom.securityDeposit,
                           furnished: _editedRoom.furnished,
                         );
                       },
                     ),
                   ),
-
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: TextFormField(
                       decoration: const InputDecoration(
                         labelStyle: TextStyle(fontSize: 15),
                         labelText: 'Security Deposit',
-                        hintText: 'Enter Days (Eg: 7)',
                         border: OutlineInputBorder(),
                       ),
                       validator: (value) {

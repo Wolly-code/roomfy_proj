@@ -51,7 +51,7 @@ class _UserTenantAppointmentScreenState
                           bookingData.ownAppointment.isEmpty
                               ? NoFileScreen()
                               : ListView.builder(
-                                  itemCount: bookingData.allAppointment.length,
+                                  itemCount: bookingData.ownAppointment.length,
                                   itemBuilder: (ctx, i) => UserAppointmentItem(
                                       item: bookingData.ownAppointment[i]),
                                 ),

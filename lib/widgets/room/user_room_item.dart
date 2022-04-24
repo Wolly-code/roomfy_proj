@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:roomfy_proj/providers/room.dart';
 import 'package:roomfy_proj/screens/room/user_room_detail_screen.dart';
 
 class UserRoomItem extends StatelessWidget {
@@ -17,35 +15,46 @@ class UserRoomItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scaffold = Scaffold.of(context);
-    return Card(
-      child: Column(
-        children: [
-          ClipRRect(
-            child: GestureDetector(
-              onTap: () {
-                Navigator.of(context)
-                    .pushNamed(UserRoomDetailScreen.routeName, arguments: id);
-              },
-              child: Image.network(
-                photo1,
-                fit: BoxFit.cover,
-                width: double.infinity,
-                height: 150,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Card(
+        elevation: 5,
+        margin: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 16.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(0.0),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10),
+          child: Column(
+            children: [
+              ClipRRect(
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pushNamed(
+                        UserRoomDetailScreen.routeName,
+                        arguments: id);
+                  },
+                  child: Image.network(
+                    photo1,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: 150,
+                  ),
+                ),
               ),
-            ),
+              Text(
+                title,
+                style: const TextStyle(fontSize: 20),
+              ),
+              const Divider(),
+              Text(
+                description,
+                maxLines: 3,
+                textAlign: TextAlign.justify,
+              )
+            ],
           ),
-          Text(
-            title,
-            style: const TextStyle(fontSize: 20),
-          ),
-          const Divider(),
-          Text(
-            description,
-            maxLines: 2,
-            textAlign: TextAlign.justify,
-          )
-        ],
+        ),
       ),
     );
   }

@@ -32,7 +32,7 @@ class _RoomsGridState extends State<RoomsGrid> {
             itemCount: rooms.length,
             itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
               value: rooms[i],
-              child: const RoomItem(),
+              child: RoomItem(),
             ),
           );
   }

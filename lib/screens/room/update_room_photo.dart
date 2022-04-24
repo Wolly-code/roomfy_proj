@@ -62,6 +62,11 @@ class _UpdateRoomImageState extends State<UpdateRoomImage> {
       await Provider.of<Rooms>(context, listen: false)
           .updateRoomPhoto(_photo1Stored!, _photo2Stored!, room!.id);
       await Provider.of<Rooms>(context, listen: false).fetchAndSetRoom();
+      const snackBar = SnackBar(
+        duration: Duration(seconds: 2),
+        content: Text("Room Photo updated Successfully"),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
       Navigator.of(context).pop();
     } catch (error) {
       rethrow;

@@ -133,6 +133,11 @@ class _UserTenantDetailScreenState extends State<UserTenantDetailScreen> {
           .updateTenantWithoutPhoto(
               tenant, _editedTenant.id, gender!, occupation!);
     }
+    const snackBar = SnackBar(
+      duration: Duration(seconds: 2),
+      content: Text("Tenant detail updated Successfully"),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
     Navigator.of(context).pop();
   }
 
