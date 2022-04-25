@@ -222,8 +222,8 @@ class Tenants with ChangeNotifier {
       if (query != null) {
         _displayTenants = loadedTenant
             .where((element) =>
-                element.title.toLowerCase().contains((query.toLowerCase())) ||
-                element.fullName.toLowerCase().contains((query.toLowerCase())))
+                element.status == true &&
+                element.title.toLowerCase().contains((query.toLowerCase())))
             .toList();
       }
       return _displayTenants;

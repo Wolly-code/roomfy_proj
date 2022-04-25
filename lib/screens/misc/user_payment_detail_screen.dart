@@ -118,7 +118,7 @@ class _UserPaymentDetailScreenState extends State<UserPaymentDetailScreen> {
                     backgroundImage: NetworkImage(roomData!.photo1, scale: 10),
                   ),
                   title: Text(roomData!.title),
-                  subtitle: Text(roomData!.description),
+                  subtitle: Text('Poster: '+roomData!.poster),
                   trailing: Icon(
                     _customTileExpanded
                         ? Icons.arrow_drop_down_circle

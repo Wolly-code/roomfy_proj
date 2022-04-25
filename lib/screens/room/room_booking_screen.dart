@@ -85,14 +85,14 @@ class _BookingScreenState extends State<BookingScreen> {
       }
       _form.currentState!.save();
       try {
-        // if (room!.poster == user!.userId) {
-        //   const snackBar = SnackBar(
-        //     duration: Duration(seconds: 2),
-        //     content: Text('You cant book your own post!'),
-        //   );
-        //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        //   return;
-        // }
+        if (room!.poster == user!.userId) {
+          const snackBar = SnackBar(
+            duration: Duration(seconds: 2),
+            content: Text('You cant book your own post!'),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          return;
+        }
 
         var respMsg = await Provider.of<Bookings>(context, listen: false)
             .postRoomBooking(checkIn, checkOut, room!.id, duration!);
@@ -101,6 +101,7 @@ class _BookingScreenState extends State<BookingScreen> {
           content: Text(respMsg),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        Navigator.of(context).pop();
       } catch (e) {
         rethrow;
       }
@@ -216,6 +217,11 @@ class _BookingScreenState extends State<BookingScreen> {
                           user!.userId,
                           room!.id,
                           'Security Deposit');
+                  const snackBar = SnackBar(
+                    duration: Duration(seconds: 2),
+                    content: Text("Payment Successfully"),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 },
                 onFailure: (ESewaPaymentException e) {},
               ),

@@ -17,7 +17,7 @@ class _MyPaymentDetailState extends State<MyPaymentDetail> {
         length: 2,
         child: Scaffold(
           appBar: AppBar(
-              title: const Text('My Ads'),
+              title: const Text('Payment Details'),
               bottom: const TabBar(tabs: [
                 Tab(
                   text: 'Your Payments',

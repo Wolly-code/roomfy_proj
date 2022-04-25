@@ -248,7 +248,10 @@ class Rooms with ChangeNotifier {
       if (query != null) {
         _displayRooms = loadedRoom
             .where((element) =>
-                element.title.toLowerCase().contains((query.toLowerCase())) ||
+                element.status == true &&
+                    element.title
+                        .toLowerCase()
+                        .contains((query.toLowerCase())) ||
                 element.location.toLowerCase().contains((query.toLowerCase())))
             .toList();
       }

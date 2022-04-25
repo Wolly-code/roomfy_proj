@@ -220,7 +220,9 @@ class _UserRoomBookingDetailState extends State<UserRoomBookingDetail> {
             Column(
               children: [
                 Text(
-                    'Your total amount is NRS ${roomData!.price * bookingData!.duration}/-',style: TextStyle(fontSize: 20),),
+                  'Your total amount is NRS ${roomData!.price * bookingData!.duration}/-',
+                  style: TextStyle(fontSize: 20),
+                ),
                 Center(
                   child: ESewaPaymentButton(
                     _eSewaPnp,
@@ -233,10 +235,15 @@ class _UserRoomBookingDetailState extends State<UserRoomBookingDetail> {
                       await Provider.of<Bookings>(context, listen: false)
                           .postPaymentDetails(
                               paymentDetail.productId,
-                              roomData!.securityDeposit.toDouble(),
+                              totalAmount.toDouble(),
                               userData!.userId,
                               roomData!.id,
                               'Rent Payment');
+                      const snackBar = SnackBar(
+                        duration: Duration(seconds: 2),
+                        content: Text("Payment Successfully"),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     },
                     onFailure: (ESewaPaymentException e) {},
                   ),

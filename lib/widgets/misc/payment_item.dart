@@ -28,6 +28,13 @@ class _UserPaymentItemState extends State<UserPaymentItem> {
     bool _customTileExpanded = false;
     return Card(
       child: ExpansionTile(
+        leading: CircleAvatar(
+          backgroundColor: Colors.white,
+          child: Text(
+            'NRS ' + widget.payment.amount.toString(),
+            style: const TextStyle(color: Colors.black),
+          ),
+        ),
         title: Text(widget.payment.remarks.toString()),
         subtitle: Text(
           'Payment done by: ${widget.payment.user}',
