@@ -27,6 +27,7 @@ class _BookingScreenState extends State<BookingScreen> {
   User? user;
   ESewaResult? paymentDetail;
   int? duration;
+  Booking? latestBooking;
 
   @override
   void didChangeDependencies() {
@@ -36,6 +37,14 @@ class _BookingScreenState extends State<BookingScreen> {
             ModalRoute.of(context)!.settings.arguments as String;
         final Room roomData = Provider.of<Rooms>(context).findByID(roomID!);
         final User? userData = Provider.of<Users>(context).userObj;
+        try {
+          final Booking? latestBookingData =
+              Provider.of<Bookings>(context).findByRoomID(roomData.id);
+          latestBooking = latestBookingData;
+          print('Booking Found');
+        } catch (error) {
+          print('No Booking Found');
+        }
         user = userData;
         room = roomData;
       } catch (e) {
@@ -75,14 +84,14 @@ class _BookingScreenState extends State<BookingScreen> {
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
         return;
       }
-      if (paymentDetail?.status != 'COMPLETE') {
-        const snackBar = SnackBar(
-          duration: Duration(seconds: 2),
-          content: Text('Please complete the payment before booking'),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        return;
-      }
+      // if (paymentDetail?.status != 'COMPLETE') {
+      //   const snackBar = SnackBar(
+      //     duration: Duration(seconds: 2),
+      //     content: Text('Please complete the payment before booking'),
+      //   );
+      //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      //   return;
+      // }
       _form.currentState!.save();
       try {
         if (room!.poster == user!.userId) {
@@ -107,6 +116,18 @@ class _BookingScreenState extends State<BookingScreen> {
       }
     }
 
+    var recentBooking = latestBooking != null
+        ? DateFormat('yyyy-MM-dd')
+            .format(DateTime.parse(latestBooking!.checkOut))
+        : null;
+    Widget customTextWidget = latestBooking == null
+        ? const Text("This room hasn't been booked yet")
+        : Text("This room has been booked till $recentBooking");
+    DateTime initialDate =latestBooking == null
+        ? DateTime.now(): DateTime.parse(recentBooking!);
+    DateTime firstDate = latestBooking == null
+        ? DateTime.now(): DateTime.parse(recentBooking!);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
@@ -120,6 +141,9 @@ class _BookingScreenState extends State<BookingScreen> {
           key: _form,
           child: ListView(
             children: [
+              Container(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: customTextWidget),
               TextField(
                 decoration: InputDecoration(
                   icon: const Icon(Icons.calendar_today),
@@ -130,8 +154,8 @@ class _BookingScreenState extends State<BookingScreen> {
                 onTap: () async {
                   DateTime? pickedDate = await showDatePicker(
                     context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
+                    initialDate: initialDate,
+                    firstDate: firstDate,
                     lastDate: DateTime(2101),
                   );
                   if (pickedDate != null) {
@@ -156,8 +180,8 @@ class _BookingScreenState extends State<BookingScreen> {
                 onTap: () async {
                   DateTime? pickedDate = await showDatePicker(
                     context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
+                    initialDate: initialDate,
+                    firstDate: firstDate,
                     lastDate: DateTime(2101),
                   );
                   if (pickedDate != null) {

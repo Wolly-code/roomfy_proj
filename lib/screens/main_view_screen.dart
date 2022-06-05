@@ -65,6 +65,7 @@ class _MainViewSmallState extends State<MainViewSmall> {
   Future? _fetchFuture;
 
   Future _refreshUsers() async {
+
     return Provider.of<Users>(context, listen: false).getAllUserData();
   }
 

@@ -52,7 +52,7 @@ class _UserTenantDetailScreenState extends State<UserTenantDetailScreen> {
   Future<void> _photo1() async {
     final picker = ImagePicker();
     final XFile? imageFile =
-        await picker.pickImage(source: ImageSource.gallery, maxWidth: 600);
+    await picker.pickImage(source: ImageSource.gallery, maxWidth: 600);
     if (imageFile == null) {
       return;
     }
@@ -90,7 +90,10 @@ class _UserTenantDetailScreenState extends State<UserTenantDetailScreen> {
   void didChangeDependencies() {
     if (_innit) {
       final String? tenantID =
-          ModalRoute.of(context)!.settings.arguments as String;
+      ModalRoute
+          .of(context)!
+          .settings
+          .arguments as String;
       final temp = Provider.of<Tenants>(context).findByID(tenantID!);
       _editedTenant = temp;
       photo = _editedTenant.photo1;
@@ -131,7 +134,7 @@ class _UserTenantDetailScreenState extends State<UserTenantDetailScreen> {
     } else {
       await Provider.of<Tenants>(context, listen: false)
           .updateTenantWithoutPhoto(
-              tenant, _editedTenant.id, gender!, occupation!);
+          tenant, _editedTenant.id, gender!, occupation!);
     }
     const snackBar = SnackBar(
       duration: Duration(seconds: 2),
@@ -144,6 +147,7 @@ class _UserTenantDetailScreenState extends State<UserTenantDetailScreen> {
   @override
   Widget build(BuildContext context) {
     String textButton = _editedTenant.status ? 'Deactivate' : 'Activate';
+    bool tempValue = _editedTenant.petOwner;
 
     return Scaffold(
       appBar: AppBar(
@@ -177,7 +181,7 @@ class _UserTenantDetailScreenState extends State<UserTenantDetailScreen> {
                               onPressed: () async {
                                 bool newStatus = !_editedTenant.status;
                                 await Provider.of<Tenants>(context,
-                                        listen: false)
+                                    listen: false)
                                     .updateStatus(_editedTenant.id, newStatus);
                               },
                             ),
@@ -192,7 +196,7 @@ class _UserTenantDetailScreenState extends State<UserTenantDetailScreen> {
 
                           await Provider.of<Tenants>(context, listen: false)
                               .updateStatus(
-                                  _editedTenant.id, _editedTenant.status);
+                              _editedTenant.id, _editedTenant.status);
 
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         },
@@ -214,67 +218,67 @@ class _UserTenantDetailScreenState extends State<UserTenantDetailScreen> {
                       height: 150,
                       child: _photo1Stored != null
                           ? Stack(
-                              clipBehavior: Clip.none,
-                              fit: StackFit.expand,
-                              children: [
-                                CircleAvatar(
-                                  backgroundImage: FileImage(_photo1Stored!),
-                                  radius: 200.00,
+                        clipBehavior: Clip.none,
+                        fit: StackFit.expand,
+                        children: [
+                          CircleAvatar(
+                            backgroundImage: FileImage(_photo1Stored!),
+                            radius: 200.00,
+                          ),
+                          Positioned(
+                            right: -16,
+                            bottom: 0,
+                            child: SizedBox(
+                              height: 46,
+                              width: 46,
+                              child: FlatButton(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                  side: const BorderSide(
+                                      color: Colors.white),
                                 ),
-                                Positioned(
-                                  right: -16,
-                                  bottom: 0,
-                                  child: SizedBox(
-                                    height: 46,
-                                    width: 46,
-                                    child: FlatButton(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(50),
-                                        side: const BorderSide(
-                                            color: Colors.white),
-                                      ),
-                                      color: const Color(0xFFF5F6F9),
-                                      onPressed: _photo1,
-                                      child: const Center(
-                                          child:
-                                              Icon(Icons.camera_alt_outlined)),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            )
-                          : Stack(
-                              clipBehavior: Clip.none,
-                              fit: StackFit.expand,
-                              children: [
-                                CircleAvatar(
-                                  backgroundImage: photo != ''
-                                      ? NetworkImage(photo)
-                                      : NetworkImage(photo),
-                                  radius: 200.00,
-                                ),
-                                Positioned(
-                                  right: -16,
-                                  bottom: 0,
-                                  child: SizedBox(
-                                    height: 46,
-                                    width: 46,
-                                    child: FlatButton(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(50),
-                                        side: const BorderSide(
-                                            color: Colors.white),
-                                      ),
-                                      color: const Color(0xFFF5F6F9),
-                                      onPressed: _photo1,
-                                      child: const Center(
-                                          child:
-                                              Icon(Icons.camera_alt_outlined)),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                                color: const Color(0xFFF5F6F9),
+                                onPressed: _photo1,
+                                child: const Center(
+                                    child:
+                                    Icon(Icons.camera_alt_outlined)),
+                              ),
                             ),
+                          ),
+                        ],
+                      )
+                          : Stack(
+                        clipBehavior: Clip.none,
+                        fit: StackFit.expand,
+                        children: [
+                          CircleAvatar(
+                            backgroundImage: photo != ''
+                                ? NetworkImage(photo)
+                                : NetworkImage(photo),
+                            radius: 200.00,
+                          ),
+                          Positioned(
+                            right: -16,
+                            bottom: 0,
+                            child: SizedBox(
+                              height: 46,
+                              width: 46,
+                              child: FlatButton(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                  side: const BorderSide(
+                                      color: Colors.white),
+                                ),
+                                color: const Color(0xFFF5F6F9),
+                                onPressed: _photo1,
+                                child: const Center(
+                                    child:
+                                    Icon(Icons.camera_alt_outlined)),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -538,6 +542,23 @@ class _UserTenantDetailScreenState extends State<UserTenantDetailScreen> {
                   value: _editedTenant.petOwner,
                   onChanged: (value) {
                     setState(() {
+                      _editedTenant = Tenant(id: _editedTenant.id,
+                          fullName: _editedTenant.fullName,
+                          email: _editedTenant.email,
+                          poster: _editedTenant.poster,
+                          gender: _editedTenant.gender,
+                          phoneNumber: _editedTenant.phoneNumber,
+                          occupation: _editedTenant.occupation,
+                          age: _editedTenant.age,
+                          petOwner: value is bool ? value : false,
+                          location: _editedTenant.location,
+                          budget: _editedTenant.budget,
+                          preference: _editedTenant.preference,
+                          title: _editedTenant.title,
+                          description: _editedTenant.description,
+                          created: _editedTenant.created,
+                          status: _editedTenant.status,
+                          photo1: _editedTenant.photo1);
                       petOwner = value is bool ? value : false;
                     });
                   },
@@ -555,7 +576,8 @@ class _UserTenantDetailScreenState extends State<UserTenantDetailScreen> {
                       onPressed: () async {
                         await showDialog<Null>(
                             context: context,
-                            builder: (BuildContext context) => AlertDialog(
+                            builder: (BuildContext context) =>
+                                AlertDialog(
                                   title: const Text('Delete Post'),
                                   content: const Text(
                                       'Are you sure you want to delete your post?'),
@@ -564,7 +586,7 @@ class _UserTenantDetailScreenState extends State<UserTenantDetailScreen> {
                                         child: const Text('Yes'),
                                         onPressed: () {
                                           Provider.of<Tenants>(context,
-                                                  listen: false)
+                                              listen: false)
                                               .deleteTenant(_editedTenant.id);
                                           const snackBar = SnackBar(
                                             duration: Duration(seconds: 2),

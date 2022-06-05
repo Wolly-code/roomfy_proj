@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:roomfy_proj/providers/room_booking.dart';
 import 'package:roomfy_proj/widgets/room/rooms_grid_view.dart';
 import '../../providers/room.dart';
 import '../../providers/user.dart';
@@ -31,6 +32,7 @@ class _RoomViewState extends State<RoomView> {
         _isLoading = true;
       });
       Provider.of<Users>(context).fetchAndSetUser();
+      Provider.of<Bookings>(context).fetchBookingData();
       Provider.of<Rooms>(context).fetchAndSetRoom().then((_) {
         setState(() {
           _isLoading = false;

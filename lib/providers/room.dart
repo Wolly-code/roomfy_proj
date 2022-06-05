@@ -193,7 +193,6 @@ class Rooms with ChangeNotifier {
               : favouriteItem(currentElement['id']) ?? false,
         ));
       }
-
       _displayRooms =
           loadedRoom.where((element) => element.status == true).toList();
       _ownedRoom =

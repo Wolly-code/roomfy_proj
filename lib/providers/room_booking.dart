@@ -192,7 +192,7 @@ class Bookings with ChangeNotifier {
   }
 
   Future<void> fetchBookingData() async {
-    Uri url = Uri.parse('http://10.0.2.2:8000/rooms/booking');
+    Uri url = Uri.parse('http://10.0.2.2:8000/rooms/viewallbooking');
 
     final List<Booking> loadedBooking = [];
     try {
@@ -213,7 +213,6 @@ class Bookings with ChangeNotifier {
       _bookings = loadedBooking.reversed.toList();
       _ownBookings =
           loadedBooking.where((element) => element.user == userId).toList();
-
       _yourBooked = loadedBooking
           .where((element) => element.roomOwner == userId)
           .toList();
@@ -225,7 +224,7 @@ class Bookings with ChangeNotifier {
 
   Future<String> postRoomBooking(
       String checkIn, String checkOut, String roomId, int duration) async {
-    Uri url = Uri.parse('http://10.0.2.2:8000/rooms/booking');
+    Uri url = Uri.parse('http://10.0.2.2:8000/rooms/booking/$roomId');
     try {
       var response = await http.post(url,
           headers: {
@@ -233,14 +232,13 @@ class Bookings with ChangeNotifier {
             'Content-Type': 'application/json'
           },
           body: json.encode({
-            "room": roomId,
             "check_in": checkIn,
             "check_out": checkOut,
             'duration': duration,
           }));
       // String message = json.decode();
       if (response.statusCode >= 400) {
-        return response.body;
+        return 'The room is already booked! Please select other day';
       }
       return 'Booking was successful';
     } catch (e) {
@@ -325,5 +323,9 @@ class Bookings with ChangeNotifier {
 
   Booking findByID(String id) {
     return _bookings.firstWhere((element) => element.id == id);
+  }
+
+  Booking? findByRoomID(String id) {
+    return _bookings.firstWhere((element) => element.room == id);
   }
 }

@@ -78,6 +78,13 @@ class _PostRoomAdState extends State<PostRoomAd> {
       return;
     }
     _form.currentState!.save();
+    if(_photo1Stored ==null  ||_photo2Stored==null ){
+      const snackBar = SnackBar(
+        duration: Duration(seconds: 2),
+        content: Text("No photo found"),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
     try {
       await Provider.of<Rooms>(context, listen: false).addRoom(
         _editedRoom,
